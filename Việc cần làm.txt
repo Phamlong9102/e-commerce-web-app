@@ -1,0 +1,13 @@
+*, Làm chức năng đăng nhập bằng typescript: 
+
+- Validate form bằng react-hook-form, yup, yupResolve 
+
+- Khai báo các kiểu dữ liệu cho chức năng đăng nhập bao gồm: 
+    +, userName: string, 
+    +, password: string, 
+
+- Sau khi check data gửi từ UI lên sẽ so sánh với database: 
+    +, Nếu đúng: thì navigate ra trang Home 
+    +, Nếu sai: thì show error và bắt user check lại data đã nhập 
+
+
