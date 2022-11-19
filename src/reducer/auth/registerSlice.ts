@@ -8,22 +8,22 @@ export interface RegisterPayload {
   confirmPassword: string;
 }
 
-export interface AuthState {
+export interface registerState {
   isFetching: boolean;
   success: boolean;
   error: boolean;
   currentUser?: FormRegister;
 }
 
-const initialState: AuthState = {
+const initialState: registerState = {
   isFetching: false,
   success: false,
   error: false,
   currentUser: undefined,
 };
 
-const authSlice = createSlice({
-  name: "auth",
+const registerSlice = createSlice({
+  name: "register",
   initialState,
   reducers: {
     registerStart: (state) => {
@@ -31,8 +31,8 @@ const authSlice = createSlice({
     },
     registerSuccess: (state, action: PayloadAction<FormRegister>) => {
       state.isFetching = false;
-      state.success = true;
       state.currentUser = action.payload;
+      state.success = true;
     },
     registerFailed: (state) => {
       state.isFetching = false;
@@ -43,16 +43,16 @@ const authSlice = createSlice({
 });
 
 // Export actions
-export const authActions = authSlice.actions; 
+export const regsiterActions = registerSlice.actions; 
 
 // Export reducer
-const authReducer = authSlice.reducer; 
-export default authReducer; 
+const registerReducer = registerSlice.reducer; 
+export default registerReducer; 
 
 // Selectors
-export const dataStartRegister = (state: any) => state.auth.isFetching; 
-export const dataRegisterSuccess = (state: any) => state.auth.success; 
-export const dataRegisterFailed = (state: any) => state.auth.failed; 
+export const dataStartRegister = (state: any) => state.register.isFetching; 
+export const dataRegisterSuccess = (state: any) => state.register.success; 
+export const dataRegisterFailed = (state: any) => state.register.failed; 
 
 
 

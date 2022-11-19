@@ -4,7 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { FormRegister } from "../../models/user";
 import { useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { useAppDispatch } from "../../redux/hooks";
 import { registerUser } from "../../api/authRequest";
 
 export interface RegisterUserProps {
@@ -55,7 +55,6 @@ export default function Register() {
     formState: { errors },
   } = useForm<FormValidate>({ resolver: yupResolver(schema) });
 
-  
   const onSubmit = async (data: FormRegister) => {
     const newUser = {
       userName: userName,

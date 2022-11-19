@@ -3,3 +3,8 @@ export interface FormRegister {
     email: string;
     password: string;
 }
+
+export interface LoginForm {
+    userName: string; 
+    password: string;  
+}
