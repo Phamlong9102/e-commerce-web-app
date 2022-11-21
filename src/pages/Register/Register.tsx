@@ -1,11 +1,12 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { FormRegister } from "../../models/user";
 import { useState } from "react";
-import { useAppDispatch } from "../../redux/hooks";
-import { registerUser } from "../../api/authRequest";
+import { useAppDispatch } from "../../store/hooks/hooks";
+import { registerStart } from "../../store/register/registerSlice";
+import { RegisterFormState } from "../../store/register/registerSlice";
 
 export interface RegisterUserProps {
   initialValues?: FormRegister;
@@ -22,7 +23,6 @@ export default function Register() {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   const schema = yup
     .object({
@@ -55,13 +55,13 @@ export default function Register() {
     formState: { errors },
   } = useForm<FormValidate>({ resolver: yupResolver(schema) });
 
-  const onSubmit = async (data: FormRegister) => {
+  const onSubmit = async (data: RegisterFormState) => {
     const newUser = {
       userName: userName,
       email: email,
       password: password,
     };
-    await registerUser(newUser, dispatch, navigate); 
+    dispatch(registerStart(newUser))
   };
 
   return (
@@ -142,14 +142,17 @@ export default function Register() {
                   )}
                 </div>
 
-                <div className="style-hover-menu pb-[16px]">
-                  <Link to="/login">Đã có tài khoản</Link>
+                <div className="pb-[16px]">
+                  <Link to="/login" className="text-[#dc3545]">Đã có tài khoản</Link>
                 </div>
 
-                <div className="flex items-center justify-center">
+                <div className="flex items-center justify-center mb-[24px]">
                   <button className="button-register">
                     <span className="text-white text-[18px] font-medium">Đăng ký</span>
                   </button>
+                </div>
+                <div className="flex items-center justify-center">
+                  <Link to="/" className="text-[#dc3545] font-medium">Trang chủ</Link>
                 </div>
               </form>
             </div>

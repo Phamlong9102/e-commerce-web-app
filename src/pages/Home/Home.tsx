@@ -2,7 +2,6 @@ import CustomerService from "../../components/childrenHome/customerService/Custo
 import NewProduct from "../../components/childrenHome/newProduct/NewProduct";
 import BannerPage from "../../components/childrenHome/swiper/BannerPage";
 
-
 export default function Home () {
   return (
     <>
