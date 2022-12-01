@@ -17,7 +17,7 @@ function* handleLogin(user: LoginForm) {
         const { data } = yield call(userApi.login, user);
         yield put(loginSuccess({ ...data }));
         yield put(push("/"));
-        toast("🦄 Login successfully!", {
+        toast("🦄 Đăng nhập thành công!", {
             position: "top-right",
             autoClose: 2000,
             hideProgressBar: false,

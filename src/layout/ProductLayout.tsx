@@ -2,9 +2,10 @@ import { Outlet } from "react-router-dom";
 import Footer from "../components/common/footer/Footer";
 import Header from "../components/common/header/Header";
 import NavbarProduct from "../components/layoutProduct/navbarProduct/NavbarProduct";
-import PaginationProduct from "../components/layoutProduct/paginationProduct/PaginationProduct";
 import FilterFeature from "../components/layoutProduct/filterLayout/FilterFeature";
 import BreadCrumbs from "../components/layoutProduct/breadCrumbs/BreadCrumbs";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
 
 export default function MainLayout() {
   return (
@@ -19,7 +20,16 @@ export default function MainLayout() {
           <div className="xl:basis-[75%] px-[12px]">
             <FilterFeature />
             <Outlet />
-            <PaginationProduct />
+            <div className="flex justify-center items-center pb-[30px]">
+              <Stack spacing={2}>
+                <Pagination
+                  sx={{ backgroundColor: "#fff" }}
+                  count={2}
+                  variant="outlined"
+                  shape="rounded"
+                />
+              </Stack>
+            </div>
           </div>
         </div>
         {/* <Outlet context={user} /> */}

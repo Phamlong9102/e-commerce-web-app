@@ -9,7 +9,9 @@ import { history, store } from "./store/store";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
+const root = ReactDOM.createRoot(
+  document.getElementById("root") as HTMLElement
+);
 let persistor = persistStore(store);
 root.render(
   <Provider store={store}>
@@ -30,6 +32,5 @@ root.render(
       pauseOnHover
       theme="light"
     />
-    <ToastContainer />
   </Provider>
 );

@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useAppDispatch } from "../../store/hooks/hooks";
 import { registerStart } from "../../store/register/registerSlice";
 import { RegisterFormState } from "../../store/register/registerSlice";
+import { useTranslation } from "react-i18next";
 
 export interface RegisterUserProps {
   initialValues?: FormRegister;
@@ -23,6 +24,7 @@ export default function Register() {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const dispatch = useAppDispatch();
+  const { t } = useTranslation(["common", "user", "order", "product"]);
 
   const schema = yup
     .object({
@@ -72,10 +74,10 @@ export default function Register() {
             <div className="w-[100%] h-fit p-[48px] bg-white rounded-[6px]">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex justify-center items-center text-[30px] pb-[20px] font-normal">
-                  Đăng ký
+                  {t("common:register")}
                 </div>
                 <div className="flex flex-col pb-[16px]">
-                  <label className="pb-[8px]">Tên đăng nhập</label>
+                  <label className="pb-[8px]">{t("common:userName")}</label>
                   <input
                     {...register("userName")}
                     onChange={(e) => {
@@ -107,7 +109,7 @@ export default function Register() {
                 </div>
 
                 <div className="flex flex-col pb-[16px]">
-                  <label className="pb-[8px]">Mật khẩu</label>
+                  <label className="pb-[8px]">{t("common:password")}</label>
                   <input
                     {...register("password")}
                     onChange={(e) => {
@@ -125,7 +127,7 @@ export default function Register() {
                 </div>
 
                 <div className="flex flex-col pb-[16px]">
-                  <label className="pb-[8px]">Nhập lại mật khẩu</label>
+                  <label className="pb-[8px]">{t("common:repeatPassword")}</label>
                   <input
                     {...register("confirmPassword")}
                     onChange={(e) => {
@@ -143,16 +145,16 @@ export default function Register() {
                 </div>
 
                 <div className="pb-[16px]">
-                  <Link to="/login" className="text-[#dc3545]">Đã có tài khoản</Link>
+                  <Link to="/login" className="text-[#dc3545]">{t("common:alreadyHaveAccount")}</Link>
                 </div>
 
                 <div className="flex items-center justify-center mb-[24px]">
                   <button className="button-register">
-                    <span className="text-white text-[18px] font-medium">Đăng ký</span>
+                    <span className="text-white text-[18px] font-medium">{t("common:register")}</span>
                   </button>
                 </div>
                 <div className="flex items-center justify-center">
-                  <Link to="/" className="text-[#dc3545] font-medium">Trang chủ</Link>
+                  <Link to="/" className="text-[#dc3545] font-semibold">{t("common:home")}</Link>
                 </div>
               </form>
             </div>

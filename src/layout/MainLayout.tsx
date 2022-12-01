@@ -6,7 +6,7 @@ export default function MainLayout() {
   return (
     <>
       <Header />
-      <main className="">
+      <main className="pt-[74px]">
         <Outlet/>
         {/* <Outlet context={user} /> */}
       </main>
