@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ProductList } from "../../models/product";
+import { RootState } from "../store";
 
 export interface ProductListState {
   fetching: boolean;
@@ -41,5 +42,5 @@ const productReducer = productSlice.reducer;
 export default productReducer; 
 
 // SELECTOR
-export const dataProduct = (state: any) => state.product.listProduct; 
-export const fetchingProduct = (state: any) => state.product.fetching; 
+export const dataProduct = (state: RootState) => state.product.listProduct; 
+export const fetchingProduct = (state: RootState) => state.product.fetching; 

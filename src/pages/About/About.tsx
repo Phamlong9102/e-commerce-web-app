@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { AboutData } from "../../models/about";
 import aboutApi from "../../api/aboutApi";
-import LoadingModal from "../../components/loadingModal/LoadingModal";
+import LoadingModal from "../../components/Loading/Loading";
 
 export default function About() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -24,9 +24,11 @@ export default function About() {
     })();
   }, []);
 
+  console.log(dataAbout);
   const currentDataAbout = dataAbout[0];
   const description = currentDataAbout?.information;
   const teamMember = currentDataAbout?.member;
+
 
 
   return (

@@ -1,9 +1,9 @@
 import { Outlet } from "react-router-dom";
 import Footer from "../components/common/footer/Footer";
 import Header from "../components/common/header/Header";
-import NavbarProduct from "../components/layoutProduct/navbarProduct/NavbarProduct";
-import FilterFeature from "../components/layoutProduct/filterLayout/FilterFeature";
-import BreadCrumbs from "../components/layoutProduct/breadCrumbs/BreadCrumbs";
+import NavbarProduct from "../components/LayoutProduct/navbarProduct/NavbarProduct";
+import FilterFeature from "../components/LayoutProduct/filterLayout/FilterFeature";
+import BreadCrumbs from "../components/LayoutProduct/breadCrumbs/BreadCrumbs";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 

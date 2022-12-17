@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "../store";
 
 export interface DataLoginResponse {
     _id: string;
@@ -75,4 +76,4 @@ const authReducer = authSlice.reducer;
 export default authReducer;
 
 // SELECTOR
-export const currentUser = (state: any) => state.auth.currentUser;
+export const currentUser = (state: RootState) => state.auth.currentUser;

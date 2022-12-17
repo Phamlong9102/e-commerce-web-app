@@ -6,7 +6,6 @@ export interface RegisterFormState {
     password: string,
 }
 
-
 export interface RegisterState {
     isFetching: boolean;
     success: boolean; 
@@ -42,8 +41,6 @@ export default registerReducer;
 
 // EXPORT ACTIONS
 export const { registerStart, registerSuccess, registerFailed } = registerSlice.actions; 
-
-// EXPORT SELECTOR
 
 
 

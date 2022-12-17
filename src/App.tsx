@@ -14,6 +14,7 @@ import ShoppingCart from "./pages/ShoppingCart/ShoppingCart";
 import Checkout from "./pages/Checkout/Checkout";
 import OrderDetail from "./pages/OrderDetail/OrderDetail";
 import ProductDetail from "./pages/ProductDetail/ProductDetail";
+import Order from "./pages/Order/Order";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
               <Route path="/shopping-cart" element={<ShoppingCart />}></Route>
               <Route path="/checkout" element={<Checkout />}></Route>
               <Route path="/order-detail/:id" element={<OrderDetail />}></Route>
+              <Route path="/order" element={<Order />}></Route>
             </Route>
             <Route path="/store" element={<ProductLayout />}>
               <Route path="shirt" element={<Shirt />}></Route>

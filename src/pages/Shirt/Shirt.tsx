@@ -6,7 +6,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { useNavigate } from "react-router-dom";
 import { fetchingProduct } from "../../store/product/productSlice";
-import LoadingModal from "../../components/loadingModal/LoadingModal";
+import Loading from "../../components/Loading/Loading";
 
 export default function Shirt() {
   const loading = useAppSelector(fetchingProduct); 
@@ -25,7 +25,7 @@ export default function Shirt() {
 
   return (
     <>
-      {loading && <LoadingModal/>}
+      {loading && <Loading/>}
       <div className="block md:grid md:grid-rows-auto md:grid-cols-2 xl:grid-rows-auto xl:grid-cols-3 gap-[18px]">
         {filterProduct?.map((product: any) => (
           <div

@@ -36,7 +36,7 @@
   .transition-header {
     transition: color 0.3s 0s ease;
   }
-  .quatity-product {
+  .quantity-product {
     position: absolute;
     display: flex;
     justify-content: center;
@@ -101,7 +101,6 @@
 /* Swiper */
 @layer components {
   .banner-01 {
-    /* background-image: url("./assets/images/banner01.jpeg"); */
     background-repeat: no-repeat;
     background-size: cover;
     background-position: top center;
@@ -237,7 +236,13 @@
   .opacity-1 {
     opacity: 1 !important;
   }
-  .circle-color-active {
+  .circle-style {
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  .circle-style-active {
     border: 3px solid #dc3545;
   }
   .size-square {
@@ -249,6 +254,12 @@
     border: 1px solid rgba(84, 80, 80, 0.8);
     border-radius: 2px;
     cursor: pointer;
+  }
+  .out-of-stock {
+    opacity: 0.3;
+  }
+  .size-active {
+    border: solid 3px #dc3545;
   }
   .font-size-comment {
     font-size: calc(22px + 0.5vw);
@@ -298,5 +309,14 @@
     margin: auto;
     padding: 0px;
     z-index: 9;
+  }
+}
+
+/* Order */
+@layer components {
+  .table-order {
+    border: 1px solid #ccc; 
+    padding: 8px;
+    text-align: left;
   }
 }

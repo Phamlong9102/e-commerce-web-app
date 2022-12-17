@@ -8,8 +8,8 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import Loading from "../../components/Loading/Loading";
 import { useNavigate } from "react-router-dom";
-import LoadingModal from "../../components/loadingModal/LoadingModal";
 
 export default function Pants() {
   const loading = useAppSelector(fetchingProduct);
@@ -28,7 +28,7 @@ export default function Pants() {
 
   return (
     <>
-      {loading && <LoadingModal />}
+      {loading && <Loading />}
       <div className="block md:grid md:grid-rows-auto md:grid-cols-2 xl:grid-rows-auto xl:grid-cols-3 gap-[18px]">
         {filterProduct?.map((product: any) => (
           <div

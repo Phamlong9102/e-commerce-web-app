@@ -82,5 +82,7 @@
     "userName": "Tên đăng nhập", 
     "password": "Mật khẩu",
     "repeatPassword": "Nhập lại mật khẩu", 
-    "resetPassword": "Lấy lại mật khẩu"
+    "resetPassword": "Lấy lại mật khẩu", 
+    "lastMonth": "tháng trước", 
+    "mustLogin": "Bạn phải đăng nhập để thêm sản phẩm vào giỏ hàng"
 }

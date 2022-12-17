@@ -4,37 +4,45 @@ import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import "swiper/css/bundle";
-import { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import RelatedProduct from "../../components/ChildrenProduct/RelatedProduct/RelatedProduct";
 import FeedBack from "../../components/ChildrenProduct/FeedBack/FeedBack";
 import { useParams } from "react-router-dom";
 import productApi from "../../api/productApi";
-import LoadingModal from "../../components/loadingModal/LoadingModal";
+import LoadingModal from "../../components/Loading/Loading";
 import { useTranslation } from "react-i18next";
+import CircleIcon from "@mui/icons-material/Circle";
+import { Size } from "../../models/product";
+import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
+import { currentUser } from "../../store/auth/authSlice";
+import { toast } from "react-toastify";
+import { CartItem } from "../../models/cart";
+import { cartActions } from "../../store/cart/cartSlice";
 
 export default function ProductDetail() {
+  const { t } = useTranslation(["common"]);
   SwiperCore.use([Autoplay, Navigation, Thumbs]);
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperCore>();
-  
-  const [color, setColor] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const handleColor = (e: any) => {
-    setColor((current) => !current);
-  };
-  const [color2, setColor2] = useState(false);
-  const handleColor2 = (e: any) => {
-    setColor2((current) => !current);
-  };
-
   const [dataProductDetail, setDataProductDetail] = useState<any>([]);
   const productId = useParams();
   const idProduct = Object.values(productId);
   const currentIdProduct = idProduct[0];
+  const [selectedColor, setSelectedColor] = useState<any>();
+  const [selectedSize, setSelectedSize] = useState<Size>();
+  const [selectQuantity, setSelectQuantity] = useState<number>(1);
+  const dataUser = useAppSelector(currentUser);
+  const dispatch = useAppDispatch();
 
+  // console.log(dataUser?.cart);
+  const cart = dataUser?.cart;
+
+  // SCROLL TOP
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   }, [currentIdProduct]);
 
+  // CALL API PROUDUCT BY ID
   useEffect(() => {
     if (!currentIdProduct) return;
     (async () => {
@@ -48,186 +56,329 @@ export default function ProductDetail() {
       }
     })();
   }, [currentIdProduct]);
+
+  // DATA PRODUCT DETAILS
   const productDetail = dataProductDetail?.data;
-  const { t } = useTranslation(["product", "common"]);
+
+  // // 
+  // const quantityInCart = cart.reduce()
+
+  // HÀM CHỌN MÀU
+  const handleColorSelect = useCallback((color: any) => {
+    setSelectedColor(color);
+  }, []);
+
+  // THANH MÀU
+  const colorBar = useMemo(
+    () =>
+      productDetail &&
+      productDetail.color.map(
+        (color: any) =>
+          color.isAvailable && (
+            <div key={color.colorName}>
+              <CircleIcon
+                className={`circle-style ${
+                  color.colorName === selectedColor && "circle-style-active"
+                }`}
+                onClick={() => {
+                  if (color.isAvailable) handleColorSelect(color.colorName);
+                }}
+                sx={{ color: `${color.colorName}`, fontSize: "26px" }}
+              />
+            </div>
+          )
+      ),
+    [productDetail, selectedColor]
+  );
+
+  // HÀM CHỌN SIZE
+  const handleSizeSelect = useCallback((size: Size) => {
+    setSelectedSize(size);
+  }, []);
+
+  // THANH SIZE
+  const sizeBar = useMemo(
+    () =>
+      productDetail &&
+      productDetail.size.map((size: any) => (
+        <span
+          key={size.sizeName}
+          className={`size-square ${size.isAvailable ? "size-in-stock" : "size-out-stock"} ${
+            size.sizeName === selectedSize && "size-active"
+          }`}
+          onClick={() => {
+            if (size.isAvailable) handleSizeSelect(size.sizeName);
+          }}
+        >
+          {size.sizeName}
+        </span>
+      )),
+    [productDetail, selectedSize]
+  );
+
+  // HÀM TĂNG SỐ LƯỢNG
+  const handleIncreaseQuantity = useCallback(() => {
+    if (productDetail) {
+      if (selectQuantity >= productDetail.quantity) {
+        toast.warning(t("common:limitQuantityReached"));
+      } else {
+        setSelectQuantity(selectQuantity + 1);
+      }
+    }
+  }, [productDetail, selectQuantity]);
+
+  // HÀM GIẢM SỐ LƯỢNG
+  const handleDecreaseQuantity = useCallback(() => {
+    if (selectQuantity >= 2) {
+      setSelectQuantity(selectQuantity - 1);
+    }
+  }, [selectQuantity]);
+
+  // HÀM THÊM SẢN PHẨM VÀO GIỎ HÀNG
+  const handleAddToCart = useCallback(() => {
+    if (!dataUser) {
+      toast.warning(`${t("common:mustLogin")}`);
+      return;
+    }
+    if (!selectedColor) {
+      toast.warning(`${t("common:selectOneColor")}`);
+      return;
+    }
+    if (!selectedSize) {
+      toast.warning(`${t("common:selectOneSize")}`);
+      return;
+    }
+    if (dataUser && selectedColor && selectedSize) {
+      const cartItem: CartItem = {
+        id: productDetail._id, 
+        productName: productDetail.productName,
+        imageUrl: productDetail.imageUrl.imageUrl01,
+        price: productDetail.price,
+        quantity: selectQuantity,
+        color: selectedColor,
+        size: selectedSize,
+      };
+      // console.log(cartItem);
+      dispatch(cartActions.addCartStart(cartItem));
+    }
+  }, [dataUser, selectQuantity, selectedColor, selectedSize]);
+
+  // const handleQuantityChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (productDetail !== undefined) {
+  //     if(+e.target.value > productDetail.quantity - quantityInCart) {
+  //       if(productDetail.quantity - quantityInCart > 0) {
+  //         setSelectQuantity(productDetail.quantity - quantityInCart);
+  //       } else {
+  //         setSelectQuantity(1)
+  //       }
+  //       if(+e.target.value < 1) {
+  //         setSelectQuantity(1)
+  //       } else {
+  //         setSelectQuantity(+e.target.value); 
+  //       }
+  //     }
+  //   }
+  // }, [productDetail, quantityInCart]);
 
   return (
     <>
       {loading && <LoadingModal />}
-      <div className="lg:pt-[10px]">
-        <div className="container mx-auto px-[12px]">
-          <div className="block xl:flex xl:gap-[50px]">
-            <div className="xl:flex-[0_0_auto] xl:w-[50%]">
-              <div className="big-swiper">
-                <Swiper
-                  loop={true}
-                  spaceBetween={10}
-                  thumbs={{
-                    swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null,
-                  }}
-                  modules={[FreeMode, Navigation, Thumbs]}
-                  grabCursor={true}
-                  autoplay={{
-                    delay: 4000,
-                    disableOnInteraction: false,
-                  }}
-                >
-                  <SwiperSlide className="opacity-1">
-                    <div className="">
-                      <img className="" src={productDetail?.imageUrl?.imageUrl01} alt="" />
-                    </div>
-                  </SwiperSlide>
-                  <SwiperSlide className="opacity-1">
-                    <div className="">
-                      <img className="" src={productDetail?.imageUrl?.imageUrl02} alt="" />
-                    </div>
-                  </SwiperSlide>
-                  <SwiperSlide className="opacity-1">
-                    <div className="">
-                      <img className="" src={productDetail?.imageUrl?.imageUrl03} alt="" />
-                    </div>
-                  </SwiperSlide>
-                  <SwiperSlide className="opacity-1">
-                    <div className="">
-                      <img className="" src={productDetail?.imageUrl?.imageUrl04} alt="" />
-                    </div>
-                  </SwiperSlide>
-                </Swiper>
-              </div>
-              <div className="small-slider">
-                <Swiper
-                  onSwiper={setThumbsSwiper}
-                  loop={true}
-                  spaceBetween={10}
-                  slidesPerView={4}
-                  freeMode={true}
-                  watchSlidesProgress={true}
-                  autoplay={{
-                    delay: 4000,
-                    disableOnInteraction: false,
-                  }}
-                  modules={[FreeMode, Navigation, Thumbs]}
-                >
-                  <SwiperSlide className="">
-                    <div className="">
-                      <img
-                        className="swiper-slide swiper-slide-thumb-active"
-                        src={productDetail?.imageUrl?.imageUrl01}
-                        alt=""
-                      />
-                    </div>
-                  </SwiperSlide>
-                  <SwiperSlide className="">
-                    <div className="">
-                      <img
-                        className="swiper-slide swiper-slide-thumb-active"
-                        src={productDetail?.imageUrl?.imageUrl02}
-                        alt=""
-                      />
-                    </div>
-                  </SwiperSlide>
-                  <SwiperSlide className="">
-                    <div className="">
-                      <img
-                        className="swiper-slide swiper-slide-thumb-active"
-                        src={productDetail?.imageUrl?.imageUrl03}
-                        alt=""
-                      />
-                    </div>
-                  </SwiperSlide>
-                  <SwiperSlide className="">
-                    <div className="">
-                      <img
-                        className="swiper-slide swiper-slide-thumb-active"
-                        src={productDetail?.imageUrl?.imageUrl04}
-                        alt=""
-                      />
-                    </div>
-                  </SwiperSlide>
-                </Swiper>
-              </div>
-            </div>
-            <div className="xl:flex-[0_0_auto] xl:w-[50%] xl:pt-[60px]">
-              <div className="">
-                <div className="text-[36px] text-[#111] font-semibold mb-[25px] uppercase">
-                  {productDetail?.productName}
+      {productDetail && (
+        <div className="lg:pt-[10px]">
+          <div className="container mx-auto px-[12px]">
+            <div className="block xl:flex xl:gap-[50px]">
+              <div className="xl:flex-[0_0_auto] xl:w-[50%]">
+                {/* Big Swiper */}
+                <div className="big-swiper">
+                  <Swiper
+                    loop={true}
+                    spaceBetween={10}
+                    thumbs={{
+                      swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null,
+                    }}
+                    modules={[FreeMode, Navigation, Thumbs]}
+                    grabCursor={true}
+                    autoplay={{
+                      delay: 4000,
+                      disableOnInteraction: false,
+                    }}
+                  >
+                    <SwiperSlide className="opacity-1">
+                      <div className="">
+                        <img className="" src={productDetail?.imageUrl?.imageUrl01} alt="" />
+                      </div>
+                    </SwiperSlide>
+                    <SwiperSlide className="opacity-1">
+                      <div className="">
+                        <img className="" src={productDetail?.imageUrl?.imageUrl02} alt="" />
+                      </div>
+                    </SwiperSlide>
+                    <SwiperSlide className="opacity-1">
+                      <div className="">
+                        <img className="" src={productDetail?.imageUrl?.imageUrl03} alt="" />
+                      </div>
+                    </SwiperSlide>
+                    <SwiperSlide className="opacity-1">
+                      <div className="">
+                        <img className="" src={productDetail?.imageUrl?.imageUrl04} alt="" />
+                      </div>
+                    </SwiperSlide>
+                  </Swiper>
                 </div>
-              </div>
-              <div className="mb-[16px]">
-                <span className="text-[30px] text-[#212529]">{productDetail?.price}$</span>
-              </div>
-              <div className="mb-[16px]">
-                <span className="">{t("product:quantity")}: 30</span>
-              </div>
-              <div className="flex mb-[16px]">
-                <div
-                  style={{
-                    border: color ? "3px solid #dc3545" : "1px solid #ccc",
-                  }}
-                  onClick={handleColor}
-                  className="w-[24px] h-[24px] mr-[10px] bg-white rounded-[50%] cursor-pointer"
-                ></div>
-                <div
-                  style={{
-                    border: color2 ? "3px solid #dc3545" : "1px solid #ccc",
-                  }}
-                  onClick={handleColor2}
-                  className="w-[24px] h-[24px] bg-black rounded-[50%] cursor-pointer"
-                ></div>
-              </div>
-              <div className="flex flex-wrap gap-[10px] mb-[48px]">
-                <span className="size-square">M</span>
-                <span className="size-square">L</span>
-                <span className="size-square">XL</span>
-                <span className="size-square">2XL</span>
-              </div>
-              <div className="flex mb-[16px]">
-                <div className="flex items-center justify-center w-[36px] h-[36px] border-[1px] border-solid border-[#777373] border-r-0 cursor-pointer text-[24px]">
-                  <span className="text-[24px]">-</span>
-                </div>
-                <div className="w-[40px] flex h-[36px] justify-center items-center border-[1px] border-solid border-[#777373] cursor-pointer">
-                  <span className="text-[16px]">1</span>
-                </div>
-                <div className="w-[36px] flex h-[36px] justify-center items-center border-[1px] border-solid border-[#777373] border-l-0 cursor-pointer">
-                  <span className="text-[24px]">+</span>
-                </div>
-              </div>
-              <div className="flex gap-[10px]">
-                <div className="">
-                  <button className="bg-white border-[1px] border-[#dc3545] border-solid px-[16px] py-[8px] rounded-[8px]">
-                    <span className="text-[#dc3545] text-[18px] font-semibold	">{t("common:addToCart")}</span>
-                  </button>
-                </div>
-                <div className="">
-                  <button className="bg-[#dc3545] border-[1px] border-solid px-[16px] py-[8px] rounded-[8px]">
-                    <span className="text-white text-[18px] font-semibold">{t("common:buyNow")}</span>
-                  </button>
-                </div>
-              </div>
-              <div className="mt-[40px]">
-                <div className="font-semibold">{t("common:description")}</div>
-                <div className="flex flex-col">
-                  <span className="">{productDetail?.description?.description_1}</span>
-                  <span className="">
-                    {productDetail?.description?.description_2?.description_2_1}
-                    <p>{productDetail?.description?.description_2?.description_2_2}</p>
-                    <p>{productDetail?.description?.description_2?.description_2_3}</p>
-                  </span>
-                  <span className="">
-                    {productDetail?.description?.description_3?.description_3_1}
-                    <p className="">{productDetail?.description?.description_3?.description_3_2}</p>
-                    <p className="">{productDetail?.description?.description_3?.description_3_3}</p>
-                    <p className="">{productDetail?.description?.description_3?.description_3_4}</p>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <RelatedProduct />
-          <FeedBack />
+                {/* Small Swiper */}
+                <div className="small-slider">
+                  <Swiper
+                    onSwiper={setThumbsSwiper}
+                    loop={true}
+                    spaceBetween={10}
+                    slidesPerView={4}
+                    freeMode={true}
+                    watchSlidesProgress={true}
+                    autoplay={{
+                      delay: 4000,
+                      disableOnInteraction: false,
+                    }}
+                    modules={[FreeMode, Navigation, Thumbs]}
+                  >
+                    <SwiperSlide className="">
+                      <div className="">
+                        <img
+                          className="swiper-slide swiper-slide-thumb-active"
+                          src={productDetail?.imageUrl?.imageUrl01}
+                          alt=""
+                        />
+                      </div>
+                    </SwiperSlide>
+                    <SwiperSlide className="">
+                      <div className="">
+                        <img
+                          className="swiper-slide swiper-slide-thumb-active"
+                          src={productDetail?.imageUrl?.imageUrl02}
+                          alt=""
+                        />
+                      </div>
+                    </SwiperSlide>
+                    <SwiperSlide className="">
+                      <div className="">
+                        <img
+                          className="swiper-slide swiper-slide-thumb-active"
+                          src={productDetail?.imageUrl?.imageUrl03}
+                          alt=""
+                        />
+                      </div>
+                    </SwiperSlide>
+                    <SwiperSlide className="">
+                      <div className="">
+                        <img
+                          className="swiper-slide swiper-slide-thumb-active"
+                          src={productDetail?.imageUrl?.imageUrl04}
+                          alt=""
+                        />
+                      </div>
+                    </SwiperSlide>
+                  </Swiper>
+                </div>
+              </div>
+              <div className="xl:flex-[0_0_auto] xl:w-[50%] xl:pt-[60px]">
+                <div className="">
+                  <div className="text-[36px] text-[#111] font-semibold mb-[25px] uppercase">
+                    {productDetail?.productName}
+                  </div>
+                </div>
+                <div className="mb-[16px]">
+                  <span className="text-[30px] text-[#212529]">{productDetail?.price}$</span>
+                </div>
+                <div className="mb-[16px]">
+                  <span className="">
+                    {t("product:quantity")}: {productDetail?.quantity}
+                  </span>
+                </div>
+
+                {/* CHỌN MÀU */}
+                <div className="flex mb-[16px]">{colorBar}</div>
+
+                {/* CHỌN SIZE */}
+                <div className="flex flex-wrap gap-[10px] mb-[48px]">{sizeBar}</div>
+
+                {/* TĂNG GIẢM SỐ LƯỢNG */}
+                <div className="flex mb-[16px]">
+                  {/* GIẢM SỐ LƯỢNG */}
+                  <div
+                    onClick={handleDecreaseQuantity}
+                    className="flex items-center justify-center w-[36px] h-[36px] border-[1px] border-solid border-[#777373] border-r-0 cursor-pointer text-[24px]"
+                  >
+                    <span className="text-[24px]">-</span>
+                  </div>
+                  {/* CURRENT VALUE */}
+                  <div className="w-[40px] flex h-[36px] justify-center items-center border-[1px] border-solid border-[#777373] cursor-pointer">
+                    <span className="text-[16px]">{selectQuantity}</span>
+                  </div>
+                  {/* TĂNG SỐ LƯỢNG */}
+                  <div
+                    onClick={handleIncreaseQuantity}
+                    className="w-[36px] flex h-[36px] justify-center items-center border-[1px] border-solid border-[#777373] border-l-0 cursor-pointer"
+                  >
+                    <span className="text-[24px]">+</span>
+                  </div>
+                </div>
+
+                <div className="flex gap-[10px]">
+                  {/* NÚT THÊM VÀO GIỎ HÀNG */}
+                  <div className="">
+                    <button
+                      onClick={handleAddToCart}
+                      className="text-[#dc3545] hover:text-white  bg-white hover:bg-[#dc3545] border-[1px] border-[#dc3545] border-solid px-[16px] py-[8px] rounded-[8px] transition-button"
+                    >
+                      <span className="text-[18px] font-semibold">{t("common:addToCart")}</span>
+                    </button>
+                  </div>
+
+                  {/* NÚT MUA NGAY */}
+                  <div className="">
+                    <button className="bg-[#dc3545] border-[1px] border-solid px-[16px] py-[8px] rounded-[8px]">
+                      <span className="text-white text-[18px] font-semibold">
+                        {t("common:buyNow")}
+                      </span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* MÔ TẢ SẢN PHẨM */}
+                <div className="mt-[40px]">
+                  <div className="font-semibold">{t("common:description")}</div>
+                  <div className="flex flex-col">
+                    <span className="">{productDetail?.description?.description_1}</span>
+                    <span className="">
+                      {productDetail?.description?.description_2?.description_2_1}
+                      <p>{productDetail?.description?.description_2?.description_2_2}</p>
+                      <p>{productDetail?.description?.description_2?.description_2_3}</p>
+                    </span>
+                    <span className="">
+                      {productDetail?.description?.description_3?.description_3_1}
+                      <p className="">
+                        {productDetail?.description?.description_3?.description_3_2}
+                      </p>
+                      <p className="">
+                        {productDetail?.description?.description_3?.description_3_3}
+                      </p>
+                      <p className="">
+                        {productDetail?.description?.description_3?.description_3_4}
+                      </p>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* SẢN PHẨM LIÊN QUAN */}
+            <RelatedProduct />
+
+            {/* ĐÁNH GIÁ */}
+            {productDetail && <FeedBack productDetail={productDetail} />}
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 }

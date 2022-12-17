@@ -7,6 +7,7 @@ export interface ProductList {
     imageUrl: object, 
     comment: Array<any>, 
     newArrival: boolean, 
+    filter: any, 
 }
 
 export interface ProductDetail {
@@ -19,3 +20,7 @@ export interface ProductDetail {
     comment: Array<any>, 
     newArrival: boolean, 
 }
+
+export type Color = "black" | "white" | "gray" | "blue"; 
+
+export type Size = "M" | "L" | "XL" | "2XL"; 

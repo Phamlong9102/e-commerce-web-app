@@ -1,3 +1,4 @@
+import React, { useCallback, useEffect } from "react";
 import logoHeader from "../../../assets/images/logoHeader.png";
 import SearchIcon from "@mui/icons-material/Search";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -8,30 +9,42 @@ import { currentUser, logOutStart } from "../../../store/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
 import PersonIcon from "@mui/icons-material/Person";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import React, { useCallback, useEffect } from "react";
-
+import { dataCart } from "../../../store/cart/cartSlice";
 import i18n from "../../../i18n";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 
 export default function Header() {
   const user = useAppSelector(currentUser);
+  const cartUser = user?.cart;
+  const currentCartData = useAppSelector(dataCart);
   const dispatch = useAppDispatch();
   const handleLogout = (e: any) => {
     dispatch(logOutStart());
   };
-
   const { t } = useTranslation(["common", "header", "product", "order"]);
 
+  // CHANGE LANGUAGE
   const handleLanguageChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
     i18n.changeLanguage(e.target.value);
   }, []);
 
+  // GET VALUE LANGUAGE
   useEffect(() => {
     if (localStorage.getItem("i18nextLng")!.length > 2) {
       i18next.changeLanguage("en");
     }
   }, []);
+  
+  // NHÓM CART CURENT VÀ CART BEFORE
+  const newCart = [...currentCartData, cartUser];
+  const flatArray = newCart?.flat(Infinity);
+
+  // TỔNG SỐ LƯỢNG ITEM TRONG GIỎ HÀNG
+  const countItemInCart = flatArray?.reduce(
+    (acc: any, curValue: any) => acc + curValue.quantity,
+    0
+  );
 
   return (
     <>
@@ -52,7 +65,7 @@ export default function Header() {
               <select
                 className="bg-black outline-0 border-0 text-white cursor-pointer"
                 onChange={handleLanguageChange}
-                value={localStorage.getItem("i18nextLng") || "en"}
+                value={localStorage.getItem("i18nextLng") || "vi" || "en"}
               >
                 <option value="vi">Tiếng Việt</option>
                 <option value="en">English</option>
@@ -116,9 +129,18 @@ export default function Header() {
               <div className="relative hidden lg:flex gap-[18px]">
                 <SearchIcon className="style-hover-menu" sx={{ fontSize: "30px" }} />
                 <FavoriteIcon className="style-hover-menu" sx={{ fontSize: "30px" }} />
-                <ShoppingCartIcon className="style-hover-menu" sx={{ fontSize: "30px" }} />
-                <div className="quatity-product right-[-12px] top-[-12px]">0</div>
+                <Link to="/shopping-cart">
+                  <ShoppingCartIcon className="style-hover-menu" sx={{ fontSize: "30px" }} />
+                  {flatArray.length > 0 ? (
+                    <div className="quantity-product right-[-12px] top-[-12px]">
+                      {countItemInCart}
+                    </div>
+                  ) : (
+                    <div className="quantity-product right-[-12px] top-[-12px]">0</div>
+                  )}
+                </Link>
               </div>
+              {/* Navbar Mobile */}
               <div className="block lg:hidden">
                 <NavbarMobile />
               </div>

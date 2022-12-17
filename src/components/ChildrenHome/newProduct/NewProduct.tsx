@@ -42,7 +42,7 @@ export default function NewProduct() {
                   <span className="text-[20px] font-semibold">${product.price}</span>
                   <FiberManualRecordIcon className="dot-transition" sx={{ fontSize: "18px" }} />
                 </div>
-              </div>
+              </div> 
               <div className="style-animation-home-product">
                 <span className="style-feature-home-product box-shadow-home-product">
                   <SearchIcon className="text-black hover:text-[red]" sx={{ fontSize: "22px" }} />

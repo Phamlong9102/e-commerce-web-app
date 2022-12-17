@@ -12,34 +12,48 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PersonIcon from "@mui/icons-material/Person";
 import { Link } from "react-router-dom";
 import React, { useCallback, useEffect } from "react";
+import { dataCart } from "../../../store/cart/cartSlice";
 
 import i18n from "../../../i18n";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 
 export default function NavbarMobile() {
-  const [openDrawer, setOpenDrawer] = useState(false);
-  const user = useAppSelector(currentUser);
   const dispatch = useAppDispatch();
-  const handleLogout = (e: any) => {
-    dispatch(logOutStart());
-  };
+  const user = useAppSelector(currentUser);
+  const cartUser = user?.cart;
+  const currentCartData = useAppSelector(dataCart);
+  const [openDrawer, setOpenDrawer] = useState(false);
   const [active, setActive] = useState<boolean>(false);
+  const { t } = useTranslation(["common", "header", "product", "order"]);
   const checkActive = (e: any) => {
     setActive((current) => !current);
   };
+  const handleLogout = (e: any) => {
+    dispatch(logOutStart());
+  };
 
-  const { t } = useTranslation(["common", "header", "product", "order"]);
-
+  // LANGUAGE
   const handleLanguageChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
     i18n.changeLanguage(e.target.value);
   }, []);
 
+  // CHECK LANGUAGE
   useEffect(() => {
     if (localStorage.getItem("i18nextLng")!.length > 2) {
       i18next.changeLanguage("en");
     }
   }, []);
+
+  // NHÓM CART CURENT VÀ CART BEFORE
+  const newCart = [...currentCartData, cartUser];
+  const flatArray = newCart?.flat(Infinity);
+
+  // TỔNG SỐ LƯỢNG ITEM TRONG GIỎ HÀNG
+  const countItemInCart = flatArray?.reduce(
+    (acc: any, curValue: any) => acc + curValue.quantity,
+    0
+  );
 
   return (
     <>
@@ -51,68 +65,92 @@ export default function NavbarMobile() {
           >
             <CloseIcon sx={{ color: "#dc3545", cursor: "pointer" }} />
           </div>
-          <div className="flex justify-between items-center mt-[24px]">
+          <div className="flex justify-between items-center mt-[24px] cursor-pointer">
             <LightModeIcon sx={{ color: "#ffc107" }} />
-
             {/* Selection */}
             <select
-              className="bg-[#efefef] border-0 outline-0 text-[16px]"
+              className="bg-[#efefef] border-0 outline-0 text-[16px] cursor-pointer"
               onChange={handleLanguageChange}
-              value={localStorage.getItem("i18nextLng") || "en"}
+              value={localStorage.getItem("i18nextLng") || "vi" || "en"}
             >
-              <option>English</option>
-              <option>Tiếng Việt</option>
+              <option value="en">English</option>
+              <option value="vi">Tiếng Việt</option>
             </select>
 
+            {/*  */}
             <div onClick={checkActive} className="relative">
               {user?.userName},
               {active && (
-                <div className="absolute top-[28px] right-0 w-[150px] h-[70px] bg-[#ccc] rounded-[6px] z-[99]">
-                  <Link to="/profile" className="flex gap-[5px] items-center px-[6px] pt-[6px]">
+                <div className="absolute top-[28px] right-0 w-[240px] h-[150px] px-[16px] py-[8px] bg-[#fff] rounded-[6px] z-[99] border-[1px] border-solid border-[rgba(0_0_0_0.176)]">
+                  <Link
+                    to="/profile"
+                    className="flex gap-[5px] items-center p-[8px] style-hover-menu"
+                  >
                     <PersonIcon sx={{ fontSize: "24px" }} />
-                    <span className="text-[14px]">{t("common:profile")}</span>
+                    <span className="text-[16px]">{t("common:profile")}</span>
                   </Link>
-                  <Link to="/order" className="flex gap-[5px] items-center pl-[10px] pt-[6px]">
+                  <Link
+                    to="/order"
+                    className="flex gap-[5px] items-center p-[8px] style-hover-menu"
+                  >
                     <ShoppingCartIcon sx={{ fontSize: "20px" }} />
-                    <span className="text-[14px]">{t("order:order")}</span>
+                    <span className="text-[16px]">{t("order:order")}</span>
                   </Link>
+                  <div className="flex justify-center items-center text-center">
+                    <button className="px-[16px] py-[8px] bg-[#dc3545] rounded-[8px] style-button-logout">
+                      <span onClick={handleLogout} className="text-white">
+                        {t("common:logout")}
+                      </span>
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
           </div>
           <div className="flex relative justify-center gap-[18px] mt-[28px]">
-            <SearchIcon sx={{ fontSize: "28px" }} />
-            <FavoriteIcon sx={{ fontSize: "28px" }} />
-            <ShoppingCartIcon sx={{ fontSize: "28px" }} />
-            <div className="quatity-product top-[-12px] right-[39px]">0</div>
+            <SearchIcon sx={{ fontSize: "28px", cursor: "pointer" }} className="style-hover-menu" />
+            <FavoriteIcon
+              sx={{ fontSize: "28px", cursor: "pointer" }}
+              className="style-hover-menu"
+            />
+            <Link to="/shopping-cart">
+              <ShoppingCartIcon
+                sx={{ fontSize: "28px", cursor: "pointer" }}
+                className="style-hover-menu"
+              />
+              {user.cart && (
+                <div className="quantity-product top-[-12px] right-[39px]">{countItemInCart}</div>
+              )}
+            </Link>
           </div>
           <div className="mt-[42px] font-medium	">
-            <Link to="/" className="">
-            {t("common:home")}
+            <Link to="/" className="style-hover-menu">
+              {t("common:home")}
             </Link>
             <div className="mt-[10px]">
-              <Link to="/store/shirt" className="">
-              {t("product:shirt")}
+              <Link to="/store/shirt" className="style-hover-menu">
+                {t("product:shirt")}
               </Link>
             </div>
             <div className="flex flex-col mt-[8px] ml-[18px]">
-              <span>{t("product:shirt")}</span>
-              <span>{t("product:jacket")}</span>
-              <span>{t("product:hoodie")}</span>
+              <span className="style-hover-menu">{t("product:shirt")}</span>
+              <span className="style-hover-menu">{t("product:jacket")}</span>
+              <span className="style-hover-menu">{t("product:hoodie")}</span>
             </div>
             <div className="mt-[14px]">
-              <Link to="/store/pants">{t("product:pants")}</Link>
+              <Link to="/store/pants" className="style-hover-menu">
+                {t("product:pants")}
+              </Link>
             </div>
             <div className="flex flex-col mt-[8px] ml-[18px]">
-              <span>{t("product:pants-item")}</span>
-              <span>{t("product:jeans")}</span>
-              <span>{t("product:short")}</span>
+              <span className="style-hover-menu">{t("product:pants-item")}</span>
+              <span className="style-hover-menu">{t("product:jeans")}</span>
+              <span className="style-hover-menu">{t("product:short")}</span>
             </div>
             <div className="mt-[18px]">
-              <Link to="/about">{t("header:about")}</Link>
-            </div>
-            <div onClick={handleLogout} className="mt-[18px]">
-              {t("common:logout")}
+              <Link to="/about" className="style-hover-menu">
+                {t("header:about")}
+              </Link>
             </div>
           </div>
         </div>
