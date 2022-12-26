@@ -24,12 +24,9 @@ export default function About() {
     })();
   }, []);
 
-  console.log(dataAbout);
   const currentDataAbout = dataAbout[0];
   const description = currentDataAbout?.information;
   const teamMember = currentDataAbout?.member;
-
-
 
   return (
     <>
@@ -38,7 +35,7 @@ export default function About() {
         <div className="container px-[12px] mx-auto">
           {/* Banner */}
           <div>
-            <img src={currentDataAbout?.imageBanner} alt="" />
+            <img src={currentDataAbout?.image_banner} alt="" />
           </div>
           {/* Description */}
           <div className="mt-[24px] md:grid md:grid-rows-2 md:grid-cols-2 lg:grid-rows-1 lg:grid-cols-3 lg:gap-[18px]">
@@ -52,9 +49,9 @@ export default function About() {
           {/* Our team */}
           <div className="pt-[50px] flex flex-col items-center pb-[28px]">
             <div className="text-[14px] default-color font-bold uppercase tracking-[2px]">
-              {currentDataAbout?.ourTeam}
+              {currentDataAbout?.our_team}
             </div>
-            <div className="text-[36px] font-semibold">{currentDataAbout?.meetOurTeam}</div>
+            <div className="text-[36px] font-semibold">{currentDataAbout?.meet_our_team}</div>
           </div>
           {/* Out team */}
           <div className="container mx-auto">

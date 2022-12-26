@@ -45,7 +45,7 @@ function* handleLogin(user: LoginForm) {
 function* handleLogOut() {
   try {
     yield delay(1000);
-    localStorage.removeItem("persist:cart"); 
+    localStorage.removeItem("persist:cart");
     yield put(logOutSuccees());
     yield put(push("/login"));
     toast("🦄 Đăng xuất thành công!", {

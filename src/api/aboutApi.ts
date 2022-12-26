@@ -1,9 +1,8 @@
 import axios from "axios";
-import { AboutData } from "../models/about";
 
 const aboutApi = {
   async getDataAbout() {
-    const response: AboutData = await axios.get("http://localhost:3000/get/data/about");
+    const response: any = await axios.get("http://localhost:3002/about");
     return response;
   },
 };

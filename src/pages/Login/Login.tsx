@@ -37,8 +37,9 @@ export default function Register() {
       userName: userName,
       password: password,
     };
-    dispatch(loginStart(newUser)); 
+    dispatch(loginStart(newUser));
   };
+  
   const { t } = useTranslation(["common"]);
 
   return (
@@ -84,7 +85,9 @@ export default function Register() {
                   )}
                 </div>
                 <div className="pb-[16px]">
-                  <Link to="/register" className="text-[#dc3545]">{t("common:dontHaveAccount")}</Link>
+                  <Link to="/register" className="text-[#dc3545]">
+                    {t("common:dontHaveAccount")}
+                  </Link>
                 </div>
                 <div className="flex items-center justify-center  pb-[16px]">
                   <Link to="/forgot-password" className="text-[#dc3545] font-medium">
@@ -97,7 +100,9 @@ export default function Register() {
                   </button>
                 </div>
                 <div className="flex items-center justify-center">
-                  <Link to="/" className="text-[#dc3545] font-semibold">{t("common:home")}</Link>
+                  <Link to="/" className="text-[#dc3545] font-semibold">
+                    {t("common:home")}
+                  </Link>
                 </div>
               </form>
             </div>

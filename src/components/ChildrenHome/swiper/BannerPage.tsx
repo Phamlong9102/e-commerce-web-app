@@ -46,7 +46,7 @@ export default function BannerPage() {
               <div
                 className="h-[300px] lg:h-[800px] relative lg:mt-[40px] select-none bg-no-repeat bg-cover bg-[top_center]"
                 style={{
-                  backgroundImage: `url(${data.imageUrl})`,
+                  backgroundImage: `url(${data.image_url})`,
                 }}
               >
                 <div className="container mx-auto px-[12px]">
@@ -56,9 +56,7 @@ export default function BannerPage() {
                     </div>
                     <div className=""></div>
                     <div className="mb-[16px]">
-                      <span className="text-white text-[16px] font-normal	">
-                        {data.description}
-                      </span>
+                      <span className="text-white text-[16px] font-normal	">{data.description}</span>
                     </div>
                     <div className="">
                       <button className="flex justify-between items-center gap-[8px] py-[4px] md:py-[8px] px-[8px] md:px-[24px] bg-black">
