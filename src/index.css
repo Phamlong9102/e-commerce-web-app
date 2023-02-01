@@ -315,8 +315,15 @@
 /* Order */
 @layer components {
   .table-order {
-    border: 1px solid #ccc; 
+    border: 1px solid #ccc;
     padding: 8px;
     text-align: left;
+  }
+}
+
+/* Wish-list */
+@layer components {
+  .font-size-wish-list {
+    font-size: calc(10px + 1.3vw);
   }
 }

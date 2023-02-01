@@ -33,7 +33,7 @@ export default function FeedBack(productDetail: any) {
 
   return (
     <>
-      <div className="mt-[30px]">
+      <div className="my-[30px]">
         <div className="text-[24px] mb-[32px]">{t("common:rating")}</div>
         <div className="flex gap-[12px]">
           <div className="flex flex-col justify-center">

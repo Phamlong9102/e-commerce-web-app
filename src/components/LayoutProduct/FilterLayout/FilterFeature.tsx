@@ -2,7 +2,7 @@ import SortIcon from "@mui/icons-material/Sort";
 import { useTranslation } from "react-i18next";
 
 export default function FilterFeature() {
-  const { t } = useTranslation(["product"]);
+  const { t } = useTranslation(["product", "common"]);
 
   return (
     <>
@@ -25,7 +25,7 @@ export default function FilterFeature() {
           </div>
           <div className="flex justify-between">
             <select className="bg-[#fff] w-[100%] outline-0 border-[1px] py-[6px] pl-[12px] pr-[36px] border-[#ced4da] rounded-[5px appearance-none cursor-pointer form-select-arrow-down">
-              <option value="none">None</option>
+              <option value="none">{t("common:none")}</option>
               <option value="name">{t("product:name")}</option>
               <option value="price">{t("product:price")}</option>
             </select>

@@ -14,10 +14,13 @@ import { useTranslation } from "react-i18next";
 import CircleIcon from "@mui/icons-material/Circle";
 import { Size } from "../../models/product";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
-import { currentUser } from "../../store/auth/authSlice";
+import { token } from "../../store/auth/authSlice";
 import { toast } from "react-toastify";
 import { CartItem } from "../../models/cart";
 import { cartActions } from "../../store/cart/cartSlice";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import { listFavoriteActions } from "../../store/list-favorite/listFavoriteSlice";
+import { listProductFavorite } from "../../store/list-favorite/listFavoriteSlice";
 
 export default function ProductDetail() {
   const { t } = useTranslation(["common"]);
@@ -31,16 +34,15 @@ export default function ProductDetail() {
   const [selectedColor, setSelectedColor] = useState<any>();
   const [selectedSize, setSelectedSize] = useState<Size>();
   const [selectQuantity, setSelectQuantity] = useState<number>(1);
-  const dataUser = useAppSelector(currentUser);
+  const dataUser = useAppSelector(token);
   const dispatch = useAppDispatch();
-
-  // console.log(dataUser?.cart);
-  const cart = dataUser?.cart;
+  const listFavoriteProduct = useAppSelector(listProductFavorite);
+  const finalFavoriteProduct = listFavoriteProduct?.flat(Infinity);
 
   // SCROLL TOP
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-  }, [currentIdProduct]);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   // CALL API PROUDUCT BY ID
   useEffect(() => {
@@ -60,9 +62,6 @@ export default function ProductDetail() {
   // DATA PRODUCT DETAILS
   const productDetail = dataProductDetail?.data;
 
-  // // 
-  // const quantityInCart = cart.reduce()
-
   // HÀM CHỌN MÀU
   const handleColorSelect = useCallback((color: any) => {
     setSelectedColor(color);
@@ -75,15 +74,15 @@ export default function ProductDetail() {
       productDetail.color.map(
         (color: any) =>
           color.isAvailable && (
-            <div key={color.colorName}>
+            <div key={color.color_name}>
               <CircleIcon
                 className={`circle-style ${
-                  color.colorName === selectedColor && "circle-style-active"
+                  color.color_name === selectedColor && "circle-style-active"
                 }`}
                 onClick={() => {
-                  if (color.isAvailable) handleColorSelect(color.colorName);
+                  if (color.isAvailable) handleColorSelect(color.color_name);
                 }}
-                sx={{ color: `${color.colorName}`, fontSize: "26px" }}
+                sx={{ color: `${color.color_name}`, fontSize: "26px" }}
               />
             </div>
           )
@@ -102,15 +101,15 @@ export default function ProductDetail() {
       productDetail &&
       productDetail.size.map((size: any) => (
         <span
-          key={size.sizeName}
+          key={size.size_name}
           className={`size-square ${size.isAvailable ? "size-in-stock" : "size-out-stock"} ${
-            size.sizeName === selectedSize && "size-active"
+            size.size_name === selectedSize && "size-active"
           }`}
           onClick={() => {
-            if (size.isAvailable) handleSizeSelect(size.sizeName);
+            if (size.isAvailable) handleSizeSelect(size.size_name);
           }}
         >
-          {size.sizeName}
+          {size.size_name}
         </span>
       )),
     [productDetail, selectedSize]
@@ -150,9 +149,9 @@ export default function ProductDetail() {
     }
     if (dataUser && selectedColor && selectedSize) {
       const cartItem: CartItem = {
-        id: productDetail._id, 
-        productName: productDetail.productName,
-        imageUrl: productDetail.imageUrl.imageUrl01,
+        id: productDetail.id,
+        product_name: productDetail.product_name,
+        image_url: productDetail.image_url.image_url_01,
         price: productDetail.price,
         quantity: selectQuantity,
         color: selectedColor,
@@ -163,22 +162,23 @@ export default function ProductDetail() {
     }
   }, [dataUser, selectQuantity, selectedColor, selectedSize]);
 
-  // const handleQuantityChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (productDetail !== undefined) {
-  //     if(+e.target.value > productDetail.quantity - quantityInCart) {
-  //       if(productDetail.quantity - quantityInCart > 0) {
-  //         setSelectQuantity(productDetail.quantity - quantityInCart);
-  //       } else {
-  //         setSelectQuantity(1)
-  //       }
-  //       if(+e.target.value < 1) {
-  //         setSelectQuantity(1)
-  //       } else {
-  //         setSelectQuantity(+e.target.value); 
-  //       }
-  //     }
-  //   }
-  // }, [productDetail, quantityInCart]);
+  // THÊM SẢN PHẨM VÀO WISH-LIST
+  const addToFavoriteList = (e: any) => {
+    console.log("dataProduct: ", productDetail);
+    dispatch(listFavoriteActions.addProductToFavoriteListStart(productDetail));
+  };
+
+  console.log("listFavorite: ", listFavoriteProduct);
+  // LẤY RA ID CỦA TẤT CẢ SẢN PHẨM TRONG WISH LIST
+  const checkId = finalFavoriteProduct.some((item) => item.id === currentIdProduct);
+
+  console.log("checkId: ", checkId);
+  console.log("currentIdProduct :", currentIdProduct);
+
+  const removeFromFavoriteList = (e: any) => {
+    dispatch(listFavoriteActions.removeProductFromFavoriteStart(currentIdProduct));
+    console.log("currentIdProduct: ", currentIdProduct);
+  };
 
   return (
     <>
@@ -205,22 +205,22 @@ export default function ProductDetail() {
                   >
                     <SwiperSlide className="opacity-1">
                       <div className="">
-                        <img className="" src={productDetail?.imageUrl?.imageUrl01} alt="" />
+                        <img className="" src={productDetail?.image_url?.image_url_01} alt="" />
                       </div>
                     </SwiperSlide>
                     <SwiperSlide className="opacity-1">
                       <div className="">
-                        <img className="" src={productDetail?.imageUrl?.imageUrl02} alt="" />
+                        <img className="" src={productDetail?.image_url?.image_url_02} alt="" />
                       </div>
                     </SwiperSlide>
                     <SwiperSlide className="opacity-1">
                       <div className="">
-                        <img className="" src={productDetail?.imageUrl?.imageUrl03} alt="" />
+                        <img className="" src={productDetail?.image_url?.image_url_03} alt="" />
                       </div>
                     </SwiperSlide>
                     <SwiperSlide className="opacity-1">
                       <div className="">
-                        <img className="" src={productDetail?.imageUrl?.imageUrl04} alt="" />
+                        <img className="" src={productDetail?.image_url?.image_url_04} alt="" />
                       </div>
                     </SwiperSlide>
                   </Swiper>
@@ -245,7 +245,7 @@ export default function ProductDetail() {
                       <div className="">
                         <img
                           className="swiper-slide swiper-slide-thumb-active"
-                          src={productDetail?.imageUrl?.imageUrl01}
+                          src={productDetail?.image_url?.image_url_01}
                           alt=""
                         />
                       </div>
@@ -254,7 +254,7 @@ export default function ProductDetail() {
                       <div className="">
                         <img
                           className="swiper-slide swiper-slide-thumb-active"
-                          src={productDetail?.imageUrl?.imageUrl02}
+                          src={productDetail?.image_url?.image_url_02}
                           alt=""
                         />
                       </div>
@@ -263,7 +263,7 @@ export default function ProductDetail() {
                       <div className="">
                         <img
                           className="swiper-slide swiper-slide-thumb-active"
-                          src={productDetail?.imageUrl?.imageUrl03}
+                          src={productDetail?.image_url?.image_url_03}
                           alt=""
                         />
                       </div>
@@ -272,7 +272,7 @@ export default function ProductDetail() {
                       <div className="">
                         <img
                           className="swiper-slide swiper-slide-thumb-active"
-                          src={productDetail?.imageUrl?.imageUrl04}
+                          src={productDetail?.image_url?.image_url_04}
                           alt=""
                         />
                       </div>
@@ -283,7 +283,7 @@ export default function ProductDetail() {
               <div className="xl:flex-[0_0_auto] xl:w-[50%] xl:pt-[60px]">
                 <div className="">
                   <div className="text-[36px] text-[#111] font-semibold mb-[25px] uppercase">
-                    {productDetail?.productName}
+                    {productDetail?.product_name}
                   </div>
                 </div>
                 <div className="mb-[16px]">
@@ -299,7 +299,26 @@ export default function ProductDetail() {
                 <div className="flex mb-[16px]">{colorBar}</div>
 
                 {/* CHỌN SIZE */}
-                <div className="flex flex-wrap gap-[10px] mb-[48px]">{sizeBar}</div>
+                <div className="flex flex-wrap gap-[10px] mb-[20px]">{sizeBar}</div>
+
+                {/* THÊM VÀO DANH SÁCH YÊU THÍCH */}
+                {checkId ? (
+                  <div className="pb-[12px]">
+                    <FavoriteIcon
+                      onClick={removeFromFavoriteList}
+                      className="text-[red] cursor-pointer"
+                      sx={{ fontSize: "25px" }}
+                    />
+                  </div>
+                ) : (
+                  <div className="pb-[12px]">
+                    <FavoriteIcon
+                      onClick={addToFavoriteList}
+                      className="text-black hover:text-[red] cursor-pointer"
+                      sx={{ fontSize: "25px" }}
+                    />
+                  </div>
+                )}
 
                 {/* TĂNG GIẢM SỐ LƯỢNG */}
                 <div className="flex mb-[16px]">
@@ -322,7 +341,6 @@ export default function ProductDetail() {
                     <span className="text-[24px]">+</span>
                   </div>
                 </div>
-
                 <div className="flex gap-[10px]">
                   {/* NÚT THÊM VÀO GIỎ HÀNG */}
                   <div className="">
@@ -343,7 +361,6 @@ export default function ProductDetail() {
                     </button>
                   </div>
                 </div>
-
                 {/* MÔ TẢ SẢN PHẨM */}
                 <div className="mt-[40px]">
                   <div className="font-semibold">{t("common:description")}</div>

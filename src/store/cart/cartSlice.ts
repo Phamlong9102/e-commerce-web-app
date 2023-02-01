@@ -5,7 +5,7 @@ import { RootState } from "../store";
 export interface CartState {
   isCartLoading: boolean;
   cartItems: null | CartItem;
-  cart: any[] /* | Cart */;
+  cart: any[];
   error: boolean;
 }
 
@@ -32,7 +32,7 @@ const cartSlice = createSlice({
       state.isCartLoading = false;
       state.error = true;
     },
-    
+
     addCartStart(state, action: PayloadAction<CartItem>) {
       state.isCartLoading = true;
       state.cartItems = action.payload;
@@ -42,6 +42,18 @@ const cartSlice = createSlice({
       state.cart = [...state.cart, action.payload];
     },
     addCartFailed(state) {
+      state.isCartLoading = false;
+      state.error = true;
+    },
+
+    removeProductStart(state, action: PayloadAction<any>) {
+      state.isCartLoading = true;
+      state.cartItems = action.payload;
+    },
+    removeProductSuccess(state, action: any) {
+      state.isCartLoading = false;
+    },
+    removeProductFailed(state) {
       state.isCartLoading = false;
       state.error = true;
     },
@@ -57,4 +69,3 @@ export default cartReducer;
 
 // EXPORT SELECTOR
 export const dataCart = (state: RootState) => state.cart.cart;
-// export const dataCurrentCartItems = (state: RootState) => state.cart.cartItems; 

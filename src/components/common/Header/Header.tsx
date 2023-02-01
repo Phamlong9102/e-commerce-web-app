@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import logoHeader from "../../../assets/images/logoHeader.png";
 import SearchIcon from "@mui/icons-material/Search";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import LightModeIcon from "@mui/icons-material/LightMode";
-import NavbarMobile from "../navbarMobile/NavbarMobile";
+import NavbarMobile from "../NavbarMobile/NavbarMobile";
 import { Link } from "react-router-dom";
-import { currentUser, logOutStart } from "../../../store/auth/authSlice";
+import { token, logOutStart } from "../../../store/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
 import PersonIcon from "@mui/icons-material/Person";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -13,16 +13,18 @@ import { dataCart } from "../../../store/cart/cartSlice";
 import i18n from "../../../i18n";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
+import DisplayMode from "../../DisplayMode/DisplayMode";
 
 export default function Header() {
-  const user = useAppSelector(currentUser);
-  const cartUser = user?.cart;
-  const currentCartData = useAppSelector(dataCart);
+  const userInfo = useAppSelector(token);
+  const cartBefore = userInfo?.cart;
+  const currentCart = useAppSelector(dataCart);
   const dispatch = useAppDispatch();
   const handleLogout = (e: any) => {
     dispatch(logOutStart());
   };
   const { t } = useTranslation(["common", "header", "product", "order"]);
+  const [finalCart, SetFinalCart] = useState<any>();
 
   // CHANGE LANGUAGE
   const handleLanguageChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -35,16 +37,23 @@ export default function Header() {
       i18next.changeLanguage("en");
     }
   }, []);
-  
+
   // NHÓM CART CURENT VÀ CART BEFORE
-  const newCart = [...currentCartData, cartUser];
-  const flatArray = newCart?.flat(Infinity);
+  useEffect(() => {
+    if (cartBefore === null) {
+      const newCart = [...currentCart];
+      const flatArray = newCart?.flat(Infinity);
+      SetFinalCart(flatArray);
+    }
+    if (cartBefore !== null) {
+      const newCart = [...currentCart, cartBefore];
+      const flatArray = newCart?.flat(Infinity);
+      SetFinalCart(flatArray);
+    }
+  }, [cartBefore, currentCart]);
 
   // TỔNG SỐ LƯỢNG ITEM TRONG GIỎ HÀNG
-  const countItemInCart = flatArray?.reduce(
-    (acc: any, curValue: any) => acc + curValue.quantity,
-    0
-  );
+  const totalProduct = finalCart?.reduce((acc: any, curValue: any) => acc + curValue?.quantity, 0);
 
   return (
     <>
@@ -53,13 +62,16 @@ export default function Header() {
           {/* Header >768px */}
           <div className="hidden h-[40px] lg:flex bg-black w-full">
             <div className="container mx-auto flex gap-[14px] py-2 px-[12px] xl:px-0 justify-end items-center">
-              <LightModeIcon
+              {/* <LightModeIcon
                 sx={{
                   fontSize: "22px",
                   color: "#f6b331",
                   cursor: "pointer",
                 }}
-              />
+              /> */}
+              {/* <div>
+                <DisplayMode />
+              </div> */}
 
               {/* Select */}
               <select
@@ -72,9 +84,9 @@ export default function Header() {
               </select>
 
               {/* User */}
-              {user ? (
+              {userInfo ? (
                 <div className="relative header-menu cursor-pointer">
-                  <span className="text-white ">{user?.userName},</span>
+                  <span className="text-white ">{userInfo?.user_name},</span>
                   <div className="absolute right-0 top-[18px] bg-[transparent] w-[70px] h-[20px]"></div>
                   <ul className="header-menu-appear z-[99] absolute top-[28px] py-[8px] px-[16px] right-0 w-[240px] bg-white border-[1px] border-[rgba(0,0,0,0.176)] rounded-[6px]">
                     <li className="p-[8px] justify-between pb-[12px] items-center">
@@ -128,16 +140,12 @@ export default function Header() {
               </div>
               <div className="relative hidden lg:flex gap-[18px]">
                 <SearchIcon className="style-hover-menu" sx={{ fontSize: "30px" }} />
-                <FavoriteIcon className="style-hover-menu" sx={{ fontSize: "30px" }} />
+                <Link to="/wish-list">
+                  <FavoriteIcon className="style-hover-menu" sx={{ fontSize: "30px" }} />
+                </Link>
                 <Link to="/shopping-cart">
                   <ShoppingCartIcon className="style-hover-menu" sx={{ fontSize: "30px" }} />
-                  {flatArray.length > 0 ? (
-                    <div className="quantity-product right-[-12px] top-[-12px]">
-                      {countItemInCart}
-                    </div>
-                  ) : (
-                    <div className="quantity-product right-[-12px] top-[-12px]">0</div>
-                  )}
+                  <div className="quantity-product right-[-12px] top-[-12px]">{totalProduct}</div>
                 </Link>
               </div>
               {/* Navbar Mobile */}

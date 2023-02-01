@@ -1,9 +1,8 @@
 import { Outlet } from "react-router-dom";
-import Footer from "../components/common/footer/Footer";
-import Header from "../components/common/header/Header";
-import NavbarProduct from "../components/LayoutProduct/navbarProduct/NavbarProduct";
-import FilterFeature from "../components/LayoutProduct/filterLayout/FilterFeature";
-import BreadCrumbs from "../components/LayoutProduct/breadCrumbs/BreadCrumbs";
+import Footer from "../components/common/Footer/Footer";
+import Header from "../components/common/Header/Header";
+import NavbarProduct from "../components/LayoutProduct/NavbarProduct/NavbarProduct";
+import BreadCrumbs from "../components/LayoutProduct/BreadCrumbs/BreadCrumbs";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 
@@ -18,7 +17,6 @@ export default function MainLayout() {
             <NavbarProduct />
           </div>
           <div className="xl:basis-[75%] px-[12px]">
-            <FilterFeature />
             <Outlet />
             <div className="flex justify-center items-center pb-[30px]">
               <Stack spacing={2}>

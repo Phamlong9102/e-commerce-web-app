@@ -13,7 +13,9 @@ export default function NavbarProduct() {
         <div className="border-b-[1px] border-b-[#000]">
           <Accordion className="box-shadow-none ">
             <AccordionSummary className="shirt-01">
-              <div className="uppercase cursor-pointer font-bold text-[18px]">{t("product:shirt")}</div>
+              <div className="uppercase cursor-pointer font-bold text-[18px]">
+                {t("product:shirt")}
+              </div>
             </AccordionSummary>
             <AccordionDetails className="shirt-00">
               <ul className="text-[16px] font-medium">
@@ -30,7 +32,9 @@ export default function NavbarProduct() {
         <div className="border-b-[1px] border-b-[#000]">
           <Accordion className="box-shadow-none ">
             <AccordionSummary className="shirt-01">
-              <div className="uppercase cursor-pointer font-bold text-[18px]">{t("product:pants")}</div>
+              <div className="uppercase cursor-pointer font-bold text-[18px]">
+                {t("product:pants")}
+              </div>
             </AccordionSummary>
             <AccordionDetails className="shirt-00">
               <ul className="text-[16px] font-medium">
@@ -43,11 +47,13 @@ export default function NavbarProduct() {
           </Accordion>
         </div>
       </div>
-      <div className="pb-[12px]">
+      {/* <div className="pb-[12px]">
         <div className="border-b-[1px] border-b-[#000]">
           <Accordion className="box-shadow-none ">
             <AccordionSummary className="shirt-01">
-              <div className="uppercase cursor-pointer font-bold text-[18px]">{t("product:color")}</div>
+              <div className="uppercase cursor-pointer font-bold text-[18px]">
+                {t("product:color")}
+              </div>
             </AccordionSummary>
             <AccordionDetails className="shirt-00">
               <ul className="flex flex-wrap gap-[10px]">
@@ -84,7 +90,9 @@ export default function NavbarProduct() {
         <div className="border-b-[1px] border-b-[#000]">
           <Accordion className="box-shadow-none ">
             <AccordionSummary className="shirt-01">
-              <div className="uppercase cursor-pointer font-bold text-[18px]">{t("product:size")}</div>
+              <div className="uppercase cursor-pointer font-bold text-[18px]">
+                {t("product:size")}
+              </div>
             </AccordionSummary>
             <AccordionDetails className="shirt-00">
               <ul className="flex flex-wrap gap-[10px] text-[16px] font-medium">
@@ -104,7 +112,7 @@ export default function NavbarProduct() {
             </AccordionDetails>
           </Accordion>
         </div>
-      </div>
+      </div> */}
     </>
   );
 }

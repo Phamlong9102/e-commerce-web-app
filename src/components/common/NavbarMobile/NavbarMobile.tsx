@@ -7,7 +7,7 @@ import LightModeIcon from "@mui/icons-material/LightMode";
 import SearchIcon from "@mui/icons-material/Search";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
-import { currentUser, logOutStart } from "../../../store/auth/authSlice";
+import { token, logOutStart } from "../../../store/auth/authSlice";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PersonIcon from "@mui/icons-material/Person";
 import { Link } from "react-router-dom";
@@ -20,15 +20,18 @@ import { useTranslation } from "react-i18next";
 
 export default function NavbarMobile() {
   const dispatch = useAppDispatch();
-  const user = useAppSelector(currentUser);
-  const cartUser = user?.cart;
-  const currentCartData = useAppSelector(dataCart);
+  const userInfo = useAppSelector(token);
+  const cartBefore = userInfo?.cart;
+  const currentCart = useAppSelector(dataCart);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [active, setActive] = useState<boolean>(false);
   const { t } = useTranslation(["common", "header", "product", "order"]);
+  const [finalCart, SetFinalCart] = useState<any>();
+
   const checkActive = (e: any) => {
     setActive((current) => !current);
   };
+
   const handleLogout = (e: any) => {
     dispatch(logOutStart());
   };
@@ -46,14 +49,21 @@ export default function NavbarMobile() {
   }, []);
 
   // NHÓM CART CURENT VÀ CART BEFORE
-  const newCart = [...currentCartData, cartUser];
-  const flatArray = newCart?.flat(Infinity);
+  useEffect(() => {
+    if (cartBefore === null) {
+      const newCart = [...currentCart];
+      const flatArray = newCart?.flat(Infinity);
+      SetFinalCart(flatArray);
+    }
+    if (cartBefore !== null) {
+      const newCart = [...currentCart, cartBefore];
+      const flatArray = newCart?.flat(Infinity);
+      SetFinalCart(flatArray);
+    }
+  }, [cartBefore, currentCart]);
 
   // TỔNG SỐ LƯỢNG ITEM TRONG GIỎ HÀNG
-  const countItemInCart = flatArray?.reduce(
-    (acc: any, curValue: any) => acc + curValue.quantity,
-    0
-  );
+  const totalProduct = finalCart?.reduce((acc: any, curValue: any) => acc + curValue.quantity, 0);
 
   return (
     <>
@@ -79,7 +89,7 @@ export default function NavbarMobile() {
 
             {/*  */}
             <div onClick={checkActive} className="relative">
-              {user?.userName},
+              {userInfo?.user_name},
               {active && (
                 <div className="absolute top-[28px] right-0 w-[240px] h-[150px] px-[16px] py-[8px] bg-[#fff] rounded-[6px] z-[99] border-[1px] border-solid border-[rgba(0_0_0_0.176)]">
                   <Link
@@ -109,18 +119,20 @@ export default function NavbarMobile() {
           </div>
           <div className="flex relative justify-center gap-[18px] mt-[28px]">
             <SearchIcon sx={{ fontSize: "28px", cursor: "pointer" }} className="style-hover-menu" />
-            <FavoriteIcon
-              sx={{ fontSize: "28px", cursor: "pointer" }}
-              className="style-hover-menu"
-            />
+            <Link to="/wish-list">
+              <FavoriteIcon
+                sx={{ fontSize: "28px", cursor: "pointer" }}
+                className="style-hover-menu"
+              />
+            </Link>
             <Link to="/shopping-cart">
               <ShoppingCartIcon
                 sx={{ fontSize: "28px", cursor: "pointer" }}
                 className="style-hover-menu"
               />
-              {user.cart && (
-                <div className="quantity-product top-[-12px] right-[39px]">{countItemInCart}</div>
-              )}
+              {/* {userInfo?.cart && ( */}
+              <div className="quantity-product top-[-12px] right-[39px]">{totalProduct}</div>
+              {/* )} */}
             </Link>
           </div>
           <div className="mt-[42px] font-medium	">

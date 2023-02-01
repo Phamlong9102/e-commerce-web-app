@@ -3,35 +3,53 @@ import { Link } from "react-router-dom";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import CloseIcon from "@mui/icons-material/Close";
-import { currentUser } from "../../store/auth/authSlice";
-import { useAppSelector } from "../../store/hooks/hooks";
+import { token } from "../../store/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import { useEffect, useState } from "react";
-import { dataCart } from "../../store/cart/cartSlice";
+import { cartActions, dataCart } from "../../store/cart/cartSlice";
 import _ from "lodash";
 
 export default function ShoppingCart() {
   const { t } = useTranslation(["order", "common"]);
-  const user = useAppSelector(currentUser);
-  const currentCartData = useAppSelector(dataCart);
-  const cartUser = user?.cart;
+  const user = useAppSelector(token);
+  const currentCart = useAppSelector(dataCart);
+  const cartBefore = user?.cart;
+  const [cart, setCart] = useState<any>([]);
   const [finalCart, setFinalCart] = useState<any>([]);
+  const dispatch = useAppDispatch();
 
-  const newCart = [...currentCartData, cartUser];
-  const flatArray = newCart?.flat(Infinity);
-  console.log("flatArray: ", flatArray);
+  // NHÓM CART CURENT VÀ CART BEFORE
+  useEffect(() => {
+    if (cartBefore === null) {
+      const newCart = [...currentCart];
+      const flatArray = newCart?.flat(Infinity);
+      setCart(flatArray);
+    }
+    if (cartBefore !== null) {
+      const newCart = [...currentCart, ...cartBefore];
+      const flatArray = newCart?.flat(Infinity);
+      setCart(flatArray);
+    }
+  }, [cartBefore, currentCart]);
 
   // NHÓM CÁC SẢN PHẨM CÙNG ID, COLOR, SIZE VÀO CÙNG 1 ARRAY KHI USER THÊM SẢN PHẨM VÀO GIỎ HÀNG
   useEffect(() => {
-    const groupProductById = _.groupBy(flatArray, (i) => `"${i.id}+${i.color}+${i.size}"`);
+    const groupProductById = _.groupBy(cart, (i) => `"${i.id}+${i.color}+${i.size}"`);
     const arrayProduct = Object.values(groupProductById);
     setFinalCart(arrayProduct);
-  }, []);
+  }, [cart]);
 
-  console.log("finalCart: ", finalCart);
+  const handleIncreaseProduct = (e: any) => {
+    console.log("Increase product");
+  };
+
+  const removeProduct = (id: any) => {
+    dispatch(cartActions.removeProductStart(id));
+  };
 
   return (
     <>
-      {cartUser?.length > 0 ? (
+      {finalCart?.length > 0 ? (
         <div className="py-[100px] container px-[12px] mx-auto">
           <div className="container px-[12px] mx-auto overflow-x-auto w-full mb-[50px]">
             <table className="min-w-[850px] table w-full">
@@ -44,18 +62,17 @@ export default function ShoppingCart() {
                 </tr>
               </thead>
               <tbody className="table-row-group	border-b-[1px] border-b-[#ccc] border-solid">
-                {finalCart && finalCart.length > 0 &&
-                  finalCart.map((data: any, index: any) => { 
-                    let quantity = 0;
-                    for (const i of data) {
-                      quantity = quantity  + i.quantity;
-                    }
-                    return (
+                {finalCart.map((data: any, index: any) => {
+                  let quantity = 0;
+                  for (const i of data) {
+                    quantity = quantity + i.quantity;
+                  }
+                  return (
                     <tr className="table-row outline-0 align-middle" key={index}>
                       <td className="table-cell py-[30px] text-left">
                         <div className="flex gap-[10px]">
                           <div className="flex w-[100px] h-[100px] min-w-[100px] min-h-[100px] max-h-[100px] items-center justify-center ">
-                            <img src={data[0].imageUrl} alt="" />
+                            <img src={data[0].image_url} alt="" />
                           </div>
                           <div className="">
                             <p className="text-[15px] font-semibold pb-[10px]">
@@ -80,7 +97,10 @@ export default function ShoppingCart() {
                           >
                             {quantity}
                           </div>
-                          <span className="cursor-pointer text-[20px]">
+                          <span
+                            onClick={handleIncreaseProduct}
+                            className="cursor-pointer text-[20px]"
+                          >
                             <NavigateNextIcon sx={{ fontSize: "30px" }} />
                           </span>
                         </div>
@@ -89,12 +109,19 @@ export default function ShoppingCart() {
                         ${data[0].price * quantity}
                       </td>
                       <td className="w-[170px] table-cell py-[30px] text-right">
-                        <div className="flex justify-center items-center text-center ">
+                        <div
+                          onClick={() => {
+                            removeProduct(data[0].id);
+                          }}
+                          // onClick={removeProduct}
+                          className="flex justify-center items-center text-center"
+                        >
                           <CloseIcon className="cursor-pointer" />
                         </div>
                       </td>
                     </tr>
-                  )})}
+                  );
+                })}
               </tbody>
             </table>
           </div>

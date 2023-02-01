@@ -9,7 +9,7 @@ export default function About() {
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-  }, [loading]);
+  }, []);
 
   useEffect(() => {
     (async () => {

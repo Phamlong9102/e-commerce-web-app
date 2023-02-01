@@ -1,4 +1,4 @@
-import FilterFeature from "../../components/LayoutProduct/filterLayout/FilterFeature";
+import FilterFeature from "../../components/LayoutProduct/FilterLayout/FilterFeature";
 import { useTranslation } from "react-i18next";
 
 export default function Order() {
