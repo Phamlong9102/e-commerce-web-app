@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 export default function Footer() {
   return (
     <>
-      <div className="absolute bottom-0">
+      <div className="">
         <div className="bg-black pt-[70px] pb-[25px]">
           <div className="container mx-auto block md:grid md:grid-rows-2 md:grid-cols-2 xl:grid-cols-4 xl:grid-rows-1">
             <div className="px-[12px] mb-[30px]">

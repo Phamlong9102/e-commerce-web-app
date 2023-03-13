@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import logoHeader from "../../../assets/images/logoHeader.png";
-import SearchIcon from "@mui/icons-material/Search";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import LightModeIcon from "@mui/icons-material/LightMode";
 import NavbarMobile from "../NavbarMobile/NavbarMobile";
 import { Link } from "react-router-dom";
 import { token, logOutStart } from "../../../store/auth/authSlice";
@@ -13,7 +11,7 @@ import { dataCart } from "../../../store/cart/cartSlice";
 import i18n from "../../../i18n";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
-import DisplayMode from "../../DisplayMode/DisplayMode";
+import SearchComponent from "../../SearchComponent/SearchComponent";
 
 export default function Header() {
   const userInfo = useAppSelector(token);
@@ -62,18 +60,6 @@ export default function Header() {
           {/* Header >768px */}
           <div className="hidden h-[40px] lg:flex bg-black w-full">
             <div className="container mx-auto flex gap-[14px] py-2 px-[12px] xl:px-0 justify-end items-center">
-              {/* <LightModeIcon
-                sx={{
-                  fontSize: "22px",
-                  color: "#f6b331",
-                  cursor: "pointer",
-                }}
-              /> */}
-              {/* <div>
-                <DisplayMode />
-              </div> */}
-
-              {/* Select */}
               <select
                 className="bg-black outline-0 border-0 text-white cursor-pointer"
                 onChange={handleLanguageChange}
@@ -139,7 +125,9 @@ export default function Header() {
                 </Link>
               </div>
               <div className="relative hidden lg:flex gap-[18px]">
-                <SearchIcon className="style-hover-menu" sx={{ fontSize: "30px" }} />
+                <div>
+                  <SearchComponent />
+                </div>
                 <Link to="/wish-list">
                   <FavoriteIcon className="style-hover-menu" sx={{ fontSize: "30px" }} />
                 </Link>

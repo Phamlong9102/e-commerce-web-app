@@ -4,7 +4,6 @@ import { useState } from "react";
 import { IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import LightModeIcon from "@mui/icons-material/LightMode";
-import SearchIcon from "@mui/icons-material/Search";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
 import { token, logOutStart } from "../../../store/auth/authSlice";
@@ -13,6 +12,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import { Link } from "react-router-dom";
 import React, { useCallback, useEffect } from "react";
 import { dataCart } from "../../../store/cart/cartSlice";
+import SearchComponent from "../../SearchComponent/SearchComponent";
 
 import i18n from "../../../i18n";
 import i18next from "i18next";
@@ -118,7 +118,7 @@ export default function NavbarMobile() {
             </div>
           </div>
           <div className="flex relative justify-center gap-[18px] mt-[28px]">
-            <SearchIcon sx={{ fontSize: "28px", cursor: "pointer" }} className="style-hover-menu" />
+            <SearchComponent />
             <Link to="/wish-list">
               <FavoriteIcon
                 sx={{ fontSize: "28px", cursor: "pointer" }}
