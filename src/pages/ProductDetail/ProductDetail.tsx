@@ -353,13 +353,13 @@ export default function ProductDetail() {
                   </div>
 
                   {/* NÚT MUA NGAY */}
-                  <div className="">
+                  {/* <div className="">
                     <button className="bg-[#dc3545] border-[1px] border-solid px-[16px] py-[8px] rounded-[8px]">
                       <span className="text-white text-[18px] font-semibold">
                         {t("common:buyNow")}
                       </span>
                     </button>
-                  </div>
+                  </div> */}
                 </div>
                 {/* MÔ TẢ SẢN PHẨM */}
                 <div className="mt-[40px]">

@@ -39,18 +39,18 @@ export default function ShoppingCart() {
     setFinalCart(arrayProduct);
   }, [cart]);
 
-  const handleIncreaseProduct = (e: any) => {
-    console.log("Increase product");
-  };
+  console.log("finalCart: ", finalCart);
 
-  const removeProduct = (id: any) => {
-    dispatch(cartActions.removeProductStart(id));
+  const removeProduct = (index: number) => {
+    const itemRemove = finalCart.slice(index, index + 1);
+    console.log("itemRemove: ", itemRemove);
+    dispatch(cartActions.removeProductStart(itemRemove));
   };
 
   return (
     <>
       {finalCart?.length > 0 ? (
-        <div className="py-[100px] container px-[12px] mx-auto">
+        <div className="py-[100px] container px-[12px] mx-auto select-none">
           <div className="container px-[12px] mx-auto overflow-x-auto w-full mb-[50px]">
             <table className="min-w-[850px] table w-full">
               <thead className="border-b-[1px] border-b-[#ccc] border-solid table-header-group">
@@ -97,10 +97,7 @@ export default function ShoppingCart() {
                           >
                             {quantity}
                           </div>
-                          <span
-                            onClick={handleIncreaseProduct}
-                            className="cursor-pointer text-[20px]"
-                          >
+                          <span className="cursor-pointer text-[20px]">
                             <NavigateNextIcon sx={{ fontSize: "30px" }} />
                           </span>
                         </div>
@@ -110,10 +107,7 @@ export default function ShoppingCart() {
                       </td>
                       <td className="w-[170px] table-cell py-[30px] text-right">
                         <div
-                          onClick={() => {
-                            removeProduct(data[0].id);
-                          }}
-                          // onClick={removeProduct}
+                          onClick={() => removeProduct(index)}
                           className="flex justify-center items-center text-center"
                         >
                           <CloseIcon className="cursor-pointer" />

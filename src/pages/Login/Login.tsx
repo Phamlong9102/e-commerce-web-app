@@ -18,6 +18,7 @@ export default function Register() {
   const [userName, setUserName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const dispatch = useAppDispatch();
+  const { t } = useTranslation(["common"]);
 
   const schema = yup
     .object({
@@ -39,8 +40,6 @@ export default function Register() {
     };
     dispatch(loginStart(newUser));
   };
-  
-  const { t } = useTranslation(["common"]);
 
   return (
     <>

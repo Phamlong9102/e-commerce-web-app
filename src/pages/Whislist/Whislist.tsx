@@ -1,6 +1,3 @@
-// import FavoriteIcon from "@mui/icons-material/Favorite";
-// import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-// import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
 import { listProductFavorite } from "../../store/list-favorite/listFavoriteSlice";
 import { useAppSelector } from "../../store/hooks/hooks";
@@ -20,18 +17,13 @@ export default function WishList() {
 
   return (
     <>
-      {/* {loading && <Loading />} */}
       <div className="container px-[12px] mx-auto">
-        <div className="mt-[48px] mb-[20px] lg:mt-[90px] flex justify-center text-center text-[30px] font-semibold">
-          Wish List
-        </div>
-
-        {listFavorite === null ? (
-          <div className="flex justify-center items-center font-size-wish-list pb-[20px]">
+        {listFavorite.length === 0 ? (
+          <div className="mt-[48px] mb-[20px] xl:mb-[143px] lg:mt-[90px] flex justify-center items-center font-size-wish-list pb-[20px]">
             No item in wishlist
           </div>
         ) : (
-          <div className="block md:grid md:grid-rows-2 md:grid-cols-2 xl:grid-rows-2 xl:grid-cols-4 gap-[18px]">
+          <div className="mt-[48px] block md:grid md:grid-rows-2 md:grid-cols-2 xl:grid-rows-2 xl:grid-cols-4 gap-[18px]">
             {listFavorite?.map((product: any) => (
               <div
                 className="px-[12px] mb-[20px] cursor-pointer relative test-hover-block"

@@ -13,7 +13,6 @@ import { Link } from "react-router-dom";
 import React, { useCallback, useEffect } from "react";
 import { dataCart } from "../../../store/cart/cartSlice";
 import SearchComponent from "../../SearchComponent/SearchComponent";
-
 import i18n from "../../../i18n";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
@@ -21,12 +20,11 @@ import { useTranslation } from "react-i18next";
 export default function NavbarMobile() {
   const dispatch = useAppDispatch();
   const userInfo = useAppSelector(token);
-  const cartBefore = userInfo?.cart;
-  const currentCart = useAppSelector(dataCart);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [active, setActive] = useState<boolean>(false);
+  const [quantityItem, setQuantityItem] = useState<number>();
+  const dataCartUser = useAppSelector(dataCart);
   const { t } = useTranslation(["common", "header", "product", "order"]);
-  const [finalCart, SetFinalCart] = useState<any>();
 
   const checkActive = (e: any) => {
     setActive((current) => !current);
@@ -48,22 +46,15 @@ export default function NavbarMobile() {
     }
   }, []);
 
-  // NHÓM CART CURENT VÀ CART BEFORE
   useEffect(() => {
-    if (cartBefore === null) {
-      const newCart = [...currentCart];
-      const flatArray = newCart?.flat(Infinity);
-      SetFinalCart(flatArray);
+    if (dataCartUser?.length > 0) {
+      const quantity = dataCartUser.reduce(
+        (accumulator: any, currentValue: any) => accumulator + currentValue.quantity,
+        0
+      );
+      setQuantityItem(quantity);
     }
-    if (cartBefore !== null) {
-      const newCart = [...currentCart, cartBefore];
-      const flatArray = newCart?.flat(Infinity);
-      SetFinalCart(flatArray);
-    }
-  }, [cartBefore, currentCart]);
-
-  // TỔNG SỐ LƯỢNG ITEM TRONG GIỎ HÀNG
-  const totalProduct = finalCart?.reduce((acc: any, curValue: any) => acc + curValue.quantity, 0);
+  }, [dataCartUser]);
 
   return (
     <>
@@ -77,7 +68,6 @@ export default function NavbarMobile() {
           </div>
           <div className="flex justify-between items-center mt-[24px] cursor-pointer">
             <LightModeIcon sx={{ color: "#ffc107" }} />
-            {/* Selection */}
             <select
               className="bg-[#efefef] border-0 outline-0 text-[16px] cursor-pointer"
               onChange={handleLanguageChange}
@@ -87,7 +77,6 @@ export default function NavbarMobile() {
               <option value="vi">Tiếng Việt</option>
             </select>
 
-            {/*  */}
             <div onClick={checkActive} className="relative">
               {userInfo?.user_name},
               {active && (
@@ -131,7 +120,7 @@ export default function NavbarMobile() {
                 className="style-hover-menu"
               />
               {/* {userInfo?.cart && ( */}
-              <div className="quantity-product top-[-12px] right-[39px]">{totalProduct}</div>
+              <div className="quantity-product top-[-12px] right-[39px]">{quantityItem}</div>
               {/* )} */}
             </Link>
           </div>

@@ -4,7 +4,8 @@ import { RootState } from "../store";
 
 export interface CartState {
   isCartLoading: boolean;
-  cartItems: null | CartItem;
+  cartItems: any;
+  itemRemove: null;
   cart: any[];
   error: boolean;
 }
@@ -12,6 +13,7 @@ export interface CartState {
 const initialState: CartState = {
   isCartLoading: false,
   cartItems: null,
+  itemRemove: null,
   cart: [],
   error: false,
 };
@@ -48,10 +50,13 @@ const cartSlice = createSlice({
 
     removeProductStart(state, action: PayloadAction<any>) {
       state.isCartLoading = true;
-      state.cartItems = action.payload;
+      state.itemRemove = action.payload;
     },
     removeProductSuccess(state, action: any) {
       state.isCartLoading = false;
+      state.cart = state.cart.filter(
+        (item) => item.id && item.color && item.size !== action.payload[0]
+      );
     },
     removeProductFailed(state) {
       state.isCartLoading = false;

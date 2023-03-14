@@ -40,16 +40,16 @@ const authSlice = createSlice({
     loginSuccess: (state, action: PayloadAction<any>) => {
       state.isFetching = false;
       state.token = action.payload;
-      state.error = false;
     },
     loginFailed: (state) => {
       state.isFetching = false;
       state.error = true;
     },
+
     logOutStart: (state) => {
       state.isFetching = true;
     },
-    logOutSuccees: (state) => {
+    logOutSuccess: (state) => {
       state.isFetching = false;
       state.token = null;
       state.error = false;
@@ -62,7 +62,7 @@ const authSlice = createSlice({
 });
 
 // EXPORT ACTIONS
-export const { loginStart, loginSuccess, loginFailed, logOutStart, logOutSuccees, logOutFailed } =
+export const { loginStart, loginSuccess, loginFailed, logOutStart, logOutSuccess, logOutFailed } =
   authSlice.actions;
 
 // EXPORT REDUCER

@@ -5,7 +5,7 @@ import {
   loginSuccess,
   loginFailed,
   logOutFailed,
-  logOutSuccees,
+  logOutSuccess,
   logOutStart,
 } from "./authSlice";
 import { push } from "redux-first-history";
@@ -17,9 +17,6 @@ function* handleLogin(user: LoginForm) {
   try {
     const { data } = yield call(userApi.login, user);
     const token = jwt_decode(data);
-
-    console.log(token);
-
     yield put(loginSuccess(token));
     yield put(push("/"));
     toast("🦄 Đăng nhập thành công!", {
@@ -49,12 +46,9 @@ function* handleLogin(user: LoginForm) {
 
 function* handleLogOut() {
   try {
+    localStorage.clear();
     yield delay(1000);
-    localStorage.removeItem("persist:cart");
-    localStorage.removeItem("persist:auth");
-    localStorage.removeItem("persist:i18nextLng");
-    localStorage.removeItem("persist:favoriteProduct");
-    yield put(logOutSuccees());
+    yield put(logOutSuccess());
     yield put(push("/login"));
     toast("🦄 Đăng xuất thành công!", {
       position: "top-right",

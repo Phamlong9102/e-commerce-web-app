@@ -10,14 +10,14 @@ function* addProductToFavoriteList({ payload }: any) {
     if (language === "en") {
       toast.success("Added to wish-list ");
     } else if (language === "vi") {
-      toast.success("Thêm sản phẩm vaò yêu thích thành công");
+      toast.success("Thêm sản phẩm vào yêu thích thành công");
     }
   } catch (err) {
     yield put(listFavoriteActions.addProductToFavoriteListFailed());
     if (language === "en") {
       toast.error("Add to wish-list failed");
     } else if (language === "vi") {
-      toast.error("Thêm sản phẩm vaò yêu thích thất bại");
+      toast.error("Thêm sản phẩm vào yêu thích thất bại");
     }
   }
 }

@@ -17,6 +17,11 @@ const userApi = {
     });
     return response;
   },
+
+  async getDataCartUser(id: string): Promise<any> {
+    const response = await axios.get(`http://localhost:3002/users/cart/${id}`);
+    return response;
+  },
 };
 
 export default userApi;

@@ -7,22 +7,21 @@ import { token, logOutStart } from "../../../store/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
 import PersonIcon from "@mui/icons-material/Person";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { dataCart } from "../../../store/cart/cartSlice";
 import i18n from "../../../i18n";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 import SearchComponent from "../../SearchComponent/SearchComponent";
+import { dataCart } from "../../../store/cart/cartSlice";
 
 export default function Header() {
   const userInfo = useAppSelector(token);
-  const cartBefore = userInfo?.cart;
-  const currentCart = useAppSelector(dataCart);
+  const dataCartUser = useAppSelector(dataCart);
   const dispatch = useAppDispatch();
+  const [quantityItem, setQuantityItem] = useState<number>();
   const handleLogout = (e: any) => {
     dispatch(logOutStart());
   };
   const { t } = useTranslation(["common", "header", "product", "order"]);
-  const [finalCart, SetFinalCart] = useState<any>();
 
   // CHANGE LANGUAGE
   const handleLanguageChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -36,22 +35,15 @@ export default function Header() {
     }
   }, []);
 
-  // NHÓM CART CURENT VÀ CART BEFORE
   useEffect(() => {
-    if (cartBefore === null) {
-      const newCart = [...currentCart];
-      const flatArray = newCart?.flat(Infinity);
-      SetFinalCart(flatArray);
+    if (dataCartUser?.length > 0) {
+      const quantity = dataCartUser.reduce(
+        (accumulator: any, currentValue: any) => accumulator + currentValue.quantity,
+        0
+      );
+      setQuantityItem(quantity);
     }
-    if (cartBefore !== null) {
-      const newCart = [...currentCart, cartBefore];
-      const flatArray = newCart?.flat(Infinity);
-      SetFinalCart(flatArray);
-    }
-  }, [cartBefore, currentCart]);
-
-  // TỔNG SỐ LƯỢNG ITEM TRONG GIỎ HÀNG
-  const totalProduct = finalCart?.reduce((acc: any, curValue: any) => acc + curValue?.quantity, 0);
+  }, [dataCartUser]);
 
   return (
     <>
@@ -133,7 +125,11 @@ export default function Header() {
                 </Link>
                 <Link to="/shopping-cart">
                   <ShoppingCartIcon className="style-hover-menu" sx={{ fontSize: "30px" }} />
-                  <div className="quantity-product right-[-12px] top-[-12px]">{totalProduct}</div>
+                  {dataCartUser?.length > 0 ? (
+                    <div className="quantity-product right-[-12px] top-[-12px]">{quantityItem}</div>
+                  ) : (
+                    <div className="quantity-product right-[-12px] top-[-12px]">0</div>
+                  )}
                 </Link>
               </div>
               {/* Navbar Mobile */}

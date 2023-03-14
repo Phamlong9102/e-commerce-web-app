@@ -1,3 +1,0 @@
-- fetchCartStart: Khi đăng nhập nếu USER CART có sản phẩm thì thằng 
-fetchCartStart phải lấy được thông tin và đẩy vào trong thằng cart
-

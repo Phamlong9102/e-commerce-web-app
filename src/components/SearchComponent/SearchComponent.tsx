@@ -45,7 +45,7 @@ export default function FormDialog() {
             autoFocus
             margin="dense"
             id="name"
-            label="Search Product By Name..."
+            label="Search Product.."
             fullWidth
             variant="standard"
           />
