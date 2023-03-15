@@ -24,7 +24,7 @@ const cartSlice = createSlice({
   reducers: {
     fetchCartStart(state, action: PayloadAction<any>) {
       state.isCartLoading = true;
-      state.cartItems = action.payload;
+      state.cartItems = [...state.cartItems, action.payload];
     },
     fetchCartSuccess(state, action: PayloadAction<any>) {
       state.isCartLoading = false;
@@ -54,9 +54,7 @@ const cartSlice = createSlice({
     },
     removeProductSuccess(state, action: any) {
       state.isCartLoading = false;
-      state.cart = state.cart.filter(
-        (item) => item.id && item.color && item.size !== action.payload[0]
-      );
+      state.cart = action.payload;
     },
     removeProductFailed(state) {
       state.isCartLoading = false;

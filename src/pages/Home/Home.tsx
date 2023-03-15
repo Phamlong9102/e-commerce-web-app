@@ -5,7 +5,7 @@ import LoadingModal from "../../components/Loading/Loading";
 import { fetchingProduct } from "../../store/product/productSlice";
 import { useAppSelector } from "../../store/hooks/hooks";
 import { useAppDispatch } from "../../store/hooks/hooks";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { token } from "../../store/auth/authSlice";
 import { cartActions } from "../../store/cart/cartSlice";
 
@@ -23,7 +23,7 @@ export default function Home() {
         console.log(err);
       }
     })();
-  }, [idUser]);
+  }, [dispatch, idUser]);
 
   return (
     <>

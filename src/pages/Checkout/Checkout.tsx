@@ -4,7 +4,6 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { token } from "../../store/auth/authSlice";
 import { useAppSelector } from "../../store/hooks/hooks";
 import { Link } from "react-router-dom";
 import _ from "lodash";
@@ -14,35 +13,21 @@ export default function Checkout() {
   const { t } = useTranslation(["common", "user", "order", "product"]);
   const [value, setValue] = useState("fast");
   const [value2, setValue2] = useState("cod");
-  const user = useAppSelector(token);
-  const cartBefore = user?.cart;
-  const currentCart = useAppSelector(dataCart);
-  const [cart, setCart] = useState<any>([]);
-  const [finalCart, setFinalCart] = useState<any>([]);
+  const cartItems = useAppSelector(dataCart);
+  const [finalCart, setFinalCart] = useState<any>();
 
-  // NHÓM CART CURENT VÀ CART BEFORE
-  useEffect(() => {
-    if (cartBefore === null) {
-      const newCart = [...currentCart];
-      const flatArray = newCart?.flat(Infinity);
-      setCart(flatArray);
-    }
-    if (cartBefore !== null) {
-      const newCart = [...currentCart, ...cartBefore];
-      const flatArray = newCart?.flat(Infinity);
-      setCart(flatArray);
-    }
-  }, [cartBefore, currentCart]);
+  console.log("cartItems: ", cartItems);
 
   // NHÓM CÁC SẢN PHẨM CÙNG ID, COLOR, SIZE VÀO CÙNG 1 ARRAY KHI USER THÊM SẢN PHẨM VÀO GIỎ HÀNG
   useEffect(() => {
-    const groupProductById = _.groupBy(cart, (i) => `"${i.id}+${i.color}+${i.size}"`);
+    const groupProductById = _.groupBy(cartItems, (i) => `"${i.id}+${i.color}+${i.size}"`);
     const arrayProduct = Object.values(groupProductById);
     setFinalCart(arrayProduct);
-  }, [cart]);
+  }, [cartItems]);
 
   // TÍNH GIÁ TẤT CẢ CÁC SẢN PHẨM
-  const priceCart = cart.reduce(
+  const flatFinalCart = finalCart?.flat(Infinity);
+  const priceCart = flatFinalCart?.reduce(
     (acc: any, curValue: any) => acc + curValue.quantity * curValue.price,
     0
   );
@@ -58,7 +43,7 @@ export default function Checkout() {
   return (
     <>
       <div className="py-[100px]">
-        {finalCart.length > 0 ? (
+        {finalCart?.length > 0 ? (
           <div className="container mx-auto px-[12px]">
             <div className="block xl:flex gap-[50px]">
               {/* FORM THÔNG TIN VẬN CHUYỂN */}
@@ -142,18 +127,6 @@ export default function Checkout() {
                         <FormControlLabel value="cod" control={<Radio />} label="COD" />
                       </RadioGroup>
                     </FormControl>
-                  </div>
-                </div>
-                <div className="mb-[20px]">
-                  <div className="pb-[12px]">
-                    <span>{t("order:note")}</span>
-                    <span className="text-[#e53637]">*</span>
-                  </div>
-                  <div className="">
-                    <input
-                      className="w-full px-[20px] py-[12px] border-[1px] border-solid border-[#e1e1e1] outline-0 text-[14px] bg-white"
-                      type="text"
-                    />
                   </div>
                 </div>
               </form>

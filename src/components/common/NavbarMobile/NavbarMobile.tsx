@@ -41,7 +41,8 @@ export default function NavbarMobile() {
 
   // CHECK LANGUAGE
   useEffect(() => {
-    if (localStorage.getItem("i18nextLng")!.length > 2) {
+    const language: any = localStorage.getItem("i18nextLng");
+    if (language?.length > 2) {
       i18next.changeLanguage("en");
     }
   }, []);
@@ -55,6 +56,10 @@ export default function NavbarMobile() {
       setQuantityItem(quantity);
     }
   }, [dataCartUser]);
+
+  console.log("quantityItemMobile: ", quantityItem);
+
+  console.log("dataCartUser: ", dataCartUser);
 
   return (
     <>
@@ -119,9 +124,11 @@ export default function NavbarMobile() {
                 sx={{ fontSize: "28px", cursor: "pointer" }}
                 className="style-hover-menu"
               />
-              {/* {userInfo?.cart && ( */}
-              <div className="quantity-product top-[-12px] right-[39px]">{quantityItem}</div>
-              {/* )} */}
+              {dataCartUser.length > 0 ? (
+                <div className="quantity-product top-[-12px] right-[39px]">{quantityItem}</div>
+              ) : (
+                <div className="quantity-product top-[-12px] right-[39px]">0</div>
+              )}
             </Link>
           </div>
           <div className="mt-[42px] font-medium	">

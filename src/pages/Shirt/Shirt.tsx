@@ -30,8 +30,6 @@ export default function Shirt() {
     setDefaultData(filterProduct);
   }, [allProduct]);
 
-  console.log("newProduct: ", newProduct);
-
   // SHORT PRODUCT
   const sortProduct = (e: any) => {
     console.log(e.target.value);

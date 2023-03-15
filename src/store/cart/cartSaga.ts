@@ -5,11 +5,9 @@ import { cartActions } from "./cartSlice";
 
 function* fetchDataCartUser({ payload }: any) {
   try {
-    console.log("payload: ", payload);
     const { data: dataCartUser }: { data: any } = yield call(() =>
       userApi.getDataCartUser(payload)
     );
-    console.log("dataCartUserSaga: ", dataCartUser);
     const filnalDataCartUser = dataCartUser?.cart;
     yield put(cartActions.fetchCartSuccess(filnalDataCartUser));
   } catch (err) {
@@ -41,7 +39,7 @@ function* removeProductFromCart({ payload }: any) {
   const language = localStorage.getItem("i18nextLng");
   try {
     console.log("payload: ", payload);
-    yield put(cartActions.removeProductSuccess(payload[0]));
+    yield put(cartActions.removeProductSuccess(payload));
     if (language === "en") {
       toast.success("Removed product success");
     } else if (language === "vi") {

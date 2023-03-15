@@ -3,48 +3,30 @@ import { Link } from "react-router-dom";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import CloseIcon from "@mui/icons-material/Close";
-import { token } from "../../store/auth/authSlice";
-import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
+import { useAppSelector } from "../../store/hooks/hooks";
 import { useEffect, useState } from "react";
-import { cartActions, dataCart } from "../../store/cart/cartSlice";
+import { dataCart } from "../../store/cart/cartSlice";
 import _ from "lodash";
+import { useAppDispatch } from "../../store/hooks/hooks";
+import { cartActions } from "../../store/cart/cartSlice";
 
 export default function ShoppingCart() {
   const { t } = useTranslation(["order", "common"]);
-  const user = useAppSelector(token);
-  const currentCart = useAppSelector(dataCart);
-  const cartBefore = user?.cart;
-  const [cart, setCart] = useState<any>([]);
-  const [finalCart, setFinalCart] = useState<any>([]);
+  const cartItems = useAppSelector(dataCart);
+  let [finalCart, setFinalCart] = useState<any>();
   const dispatch = useAppDispatch();
-
-  // NHÓM CART CURENT VÀ CART BEFORE
-  useEffect(() => {
-    if (cartBefore === null) {
-      const newCart = [...currentCart];
-      const flatArray = newCart?.flat(Infinity);
-      setCart(flatArray);
-    }
-    if (cartBefore !== null) {
-      const newCart = [...currentCart, ...cartBefore];
-      const flatArray = newCart?.flat(Infinity);
-      setCart(flatArray);
-    }
-  }, [cartBefore, currentCart]);
 
   // NHÓM CÁC SẢN PHẨM CÙNG ID, COLOR, SIZE VÀO CÙNG 1 ARRAY KHI USER THÊM SẢN PHẨM VÀO GIỎ HÀNG
   useEffect(() => {
-    const groupProductById = _.groupBy(cart, (i) => `"${i.id}+${i.color}+${i.size}"`);
+    const groupProductById = _.groupBy(cartItems, (i) => `"${i.id}+${i.color}+${i.size}"`);
     const arrayProduct = Object.values(groupProductById);
-    setFinalCart(arrayProduct);
-  }, [cart]);
-
-  console.log("finalCart: ", finalCart);
+    const newArr = arrayProduct.flat(Infinity);
+    setFinalCart(newArr);
+  }, [cartItems]);
 
   const removeProduct = (index: number) => {
-    const itemRemove = finalCart.slice(index, index + 1);
-    console.log("itemRemove: ", itemRemove);
-    dispatch(cartActions.removeProductStart(itemRemove));
+    finalCart.splice(index, 1);
+    dispatch(cartActions.removeProductStart(finalCart));
   };
 
   return (
@@ -63,25 +45,21 @@ export default function ShoppingCart() {
               </thead>
               <tbody className="table-row-group	border-b-[1px] border-b-[#ccc] border-solid">
                 {finalCart.map((data: any, index: any) => {
-                  let quantity = 0;
-                  for (const i of data) {
-                    quantity = quantity + i.quantity;
-                  }
                   return (
                     <tr className="table-row outline-0 align-middle" key={index}>
                       <td className="table-cell py-[30px] text-left">
                         <div className="flex gap-[10px]">
                           <div className="flex w-[100px] h-[100px] min-w-[100px] min-h-[100px] max-h-[100px] items-center justify-center ">
-                            <img src={data[0].image_url} alt="" />
+                            <img src={data.image_url} alt="" />
                           </div>
                           <div className="">
                             <p className="text-[15px] font-semibold pb-[10px]">
-                              {data[0].productName}
+                              {data.productName}
                             </p>
                             <p className="text-[16px] pb-[16px]">
-                              {t("common:variant")}: {data[0].size}, {data[0].color}
+                              {t("common:variant")}: {data.size}, {data.color}
                             </p>
-                            <p className="text-[18px] font-semibold">${data[0].price}</p>
+                            <p className="text-[18px] font-semibold">${data.price}</p>
                           </div>
                         </div>
                       </td>
@@ -90,12 +68,8 @@ export default function ShoppingCart() {
                           <span className="cursor-pointer text-[20px]">
                             <NavigateBeforeIcon sx={{ fontSize: "30px" }} />
                           </span>
-                          <div
-                            // type="number"
-                            className="flex items-center justify-center w-[50px] border-0 text-center text-[16px] pt-[2px]"
-                            // value={1}
-                          >
-                            {quantity}
+                          <div className="flex items-center justify-center w-[50px] border-0 text-center text-[16px] pt-[2px]">
+                            {data.quantity}
                           </div>
                           <span className="cursor-pointer text-[20px]">
                             <NavigateNextIcon sx={{ fontSize: "30px" }} />
@@ -103,14 +77,14 @@ export default function ShoppingCart() {
                         </div>
                       </td>
                       <td className="table-cell py-[30px] text-right font-semibold text-[18px] w-[140px]">
-                        ${data[0].price * quantity}
+                        ${data.quantity * data.price}
                       </td>
                       <td className="w-[170px] table-cell py-[30px] text-right">
-                        <div
-                          onClick={() => removeProduct(index)}
-                          className="flex justify-center items-center text-center"
-                        >
-                          <CloseIcon className="cursor-pointer" />
+                        <div className="flex justify-center items-center text-center">
+                          <CloseIcon
+                            onClick={() => removeProduct(index)}
+                            className="cursor-pointer"
+                          />
                         </div>
                       </td>
                     </tr>

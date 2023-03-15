@@ -2,14 +2,11 @@ import { useNavigate } from "react-router-dom";
 import { listProductFavorite } from "../../store/list-favorite/listFavoriteSlice";
 import { useAppSelector } from "../../store/hooks/hooks";
 import { useEffect } from "react";
-// import Loading from "../../components/Loading/Loading";
 
 export default function WishList() {
   const navigate = useNavigate();
   const listFavoriteProduct = useAppSelector(listProductFavorite);
   const listFavorite = listFavoriteProduct?.flat(Infinity);
-
-  console.log("listFavorite: ", listFavorite);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
@@ -37,20 +34,8 @@ export default function WishList() {
                   <div className="text-[16px] font-bold mb-[16px]">{product.product_name}</div>
                   <div className="flex justify-between items-center">
                     <span className="text-[20px] font-semibold">${product.price}</span>
-                    {/* <FiberManualRecordIcon className="dot-transition" sx={{ fontSize: "18px" }} /> */}
                   </div>
                 </div>
-                {/* <div className="style-animation-home-product">
-                  <span className="style-feature-home-product box-shadow-home-product">
-                    <SearchIcon className="text-black hover:text-[red]" sx={{ fontSize: "22px" }} />
-                  </span>
-                  <span className="style-feature-home-product box-shadow-home-product">
-                    <FavoriteIcon
-                      className="text-black hover:text-[red]"
-                      sx={{ fontSize: "19px" }}
-                    />
-                  </span>
-                </div> */}
               </div>
             ))}
           </div>

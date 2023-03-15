@@ -30,7 +30,7 @@ function* removeProductFromFavoriteList({ payload }: any) {
     if (language === "en") {
       toast.warning("Removed product from wish-list ");
     } else if (language === "vi") {
-      toast.success("Đã xóa sản phẩm khỏi danh sách yêu thích");
+      toast.warning("Đã xóa sản phẩm khỏi danh sách yêu thích");
     }
   } catch (err) {
     yield put(listFavoriteActions.removeProductFromFavoriteFailed());

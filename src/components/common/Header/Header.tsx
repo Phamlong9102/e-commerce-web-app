@@ -30,17 +30,16 @@ export default function Header() {
 
   // GET VALUE LANGUAGE
   useEffect(() => {
-    if (localStorage.getItem("i18nextLng")!.length > 2) {
+    const language: any = localStorage.getItem("i18nextLng");
+    if (language?.length > 2) {
       i18next.changeLanguage("en");
     }
   }, []);
 
+  // COUNT QUATITY ITEMS
   useEffect(() => {
     if (dataCartUser?.length > 0) {
-      const quantity = dataCartUser.reduce(
-        (accumulator: any, currentValue: any) => accumulator + currentValue.quantity,
-        0
-      );
+      const quantity = dataCartUser.reduce((acc: any, curValue: any) => acc + curValue.quantity, 0);
       setQuantityItem(quantity);
     }
   }, [dataCartUser]);

@@ -18,17 +18,9 @@ function* handleLogin(user: LoginForm) {
     const { data } = yield call(userApi.login, user);
     const token = jwt_decode(data);
     yield put(loginSuccess(token));
+    yield delay(1000);
     yield put(push("/"));
-    toast("🦄 Đăng nhập thành công!", {
-      position: "top-right",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: false,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
+    toast.success("Đăng nhập thành công!");
   } catch (err: any) {
     yield put(loginFailed());
     toast("🦄 Sai tên đăng nhập hoặc mật khẩu!", {

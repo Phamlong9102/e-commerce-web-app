@@ -163,22 +163,22 @@ export default function ProductDetail() {
   }, [dataUser, selectQuantity, selectedColor, selectedSize]);
 
   // THÊM SẢN PHẨM VÀO WISH-LIST
-  const addToFavoriteList = (e: any) => {
-    console.log("dataProduct: ", productDetail);
-    dispatch(listFavoriteActions.addProductToFavoriteListStart(productDetail));
-  };
+  const addToFavoriteList = useCallback(
+    (e: any) => {
+      dispatch(listFavoriteActions.addProductToFavoriteListStart(productDetail));
+    },
+    [productDetail]
+  );
 
-  console.log("listFavorite: ", listFavoriteProduct);
   // LẤY RA ID CỦA TẤT CẢ SẢN PHẨM TRONG WISH LIST
-  const checkId = finalFavoriteProduct.some((item) => item.id === currentIdProduct);
+  const checkId = finalFavoriteProduct.some((item: any) => item.id === currentIdProduct);
 
-  console.log("checkId: ", checkId);
-  console.log("currentIdProduct :", currentIdProduct);
-
-  const removeFromFavoriteList = (e: any) => {
-    dispatch(listFavoriteActions.removeProductFromFavoriteStart(currentIdProduct));
-    console.log("currentIdProduct: ", currentIdProduct);
-  };
+  const removeFromFavoriteList = useCallback(
+    (e: any) => {
+      dispatch(listFavoriteActions.removeProductFromFavoriteStart(currentIdProduct));
+    },
+    [currentIdProduct]
+  );
 
   return (
     <>
