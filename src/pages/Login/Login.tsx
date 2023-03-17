@@ -15,8 +15,6 @@ export interface RegisterUserProps {
 }
 
 export default function Register() {
-  const [userName, setUserName] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
   const dispatch = useAppDispatch();
   const { t } = useTranslation(["common"]);
 
@@ -34,11 +32,7 @@ export default function Register() {
   } = useForm<LoginState>({ resolver: yupResolver(schema) });
 
   const onSubmit = async (data: LoginState) => {
-    const newUser = {
-      userName: userName,
-      password: password,
-    };
-    dispatch(loginStart(newUser));
+    dispatch(loginStart(data));
   };
 
   return (
@@ -53,14 +47,7 @@ export default function Register() {
                 </div>
                 <div className="flex flex-col pb-[16px]">
                   <label className="pb-[8px]">{t("common:userName")}</label>
-                  <input
-                    {...register("userName")}
-                    onChange={(e) => {
-                      setUserName(e.target.value);
-                    }}
-                    className="form-style"
-                    type="text"
-                  />
+                  <input {...register("userName")} className="form-style" type="text" />
                   {errors.userName ? (
                     <p className="text-[#dc3545]">{errors.userName.message}</p>
                   ) : (
@@ -69,14 +56,7 @@ export default function Register() {
                 </div>
                 <div className="flex flex-col pb-[16px]">
                   <label className="pb-[8px]">{t("common:password")}</label>
-                  <input
-                    {...register("password")}
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                    }}
-                    className="form-style"
-                    type="password"
-                  />
+                  <input {...register("password")} className="form-style" type="password" />
                   {errors.password ? (
                     <p className="text-[#dc3545]">{errors.password.message}</p>
                   ) : (

@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import { dataProduct, fetchProductListStart } from "../../store/product/productSlice";
-import SearchIcon from "@mui/icons-material/Search";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { useNavigate } from "react-router-dom";
 import { fetchingProduct } from "../../store/product/productSlice";
 import Loading from "../../components/Loading/Loading";
@@ -32,7 +29,6 @@ export default function Shirt() {
 
   // SHORT PRODUCT
   const sortProduct = (e: any) => {
-    console.log(e.target.value);
     setSortValue(e.target.value);
     switch (e.target.value) {
       case "none":

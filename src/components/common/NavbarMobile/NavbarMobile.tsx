@@ -9,13 +9,13 @@ import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
 import { token, logOutStart } from "../../../store/auth/authSlice";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PersonIcon from "@mui/icons-material/Person";
-import { Link } from "react-router-dom";
 import React, { useCallback, useEffect } from "react";
 import { dataCart } from "../../../store/cart/cartSlice";
 import SearchComponent from "../../SearchComponent/SearchComponent";
 import i18n from "../../../i18n";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 export default function NavbarMobile() {
   const dispatch = useAppDispatch();
@@ -57,10 +57,6 @@ export default function NavbarMobile() {
     }
   }, [dataCartUser]);
 
-  console.log("quantityItemMobile: ", quantityItem);
-
-  console.log("dataCartUser: ", dataCartUser);
-
   return (
     <>
       <Drawer open={openDrawer} onClose={() => setOpenDrawer(false)}>
@@ -83,7 +79,14 @@ export default function NavbarMobile() {
             </select>
 
             <div onClick={checkActive} className="relative">
-              {userInfo?.user_name},
+              {userInfo ? (
+                userInfo?.user_name
+              ) : (
+                <div>
+                  <Link to="/login">Login</Link>
+                </div>
+              )}
+
               {active && (
                 <div className="absolute top-[28px] right-0 w-[240px] h-[150px] px-[16px] py-[8px] bg-[#fff] rounded-[6px] z-[99] border-[1px] border-solid border-[rgba(0_0_0_0.176)]">
                   <Link
